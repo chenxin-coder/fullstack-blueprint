@@ -1,6 +1,6 @@
 # fullstack-blueprint · Fullstack Engineering Blueprint
 
-A personal fullstack engineering design skill for Codex, turning project experience into reusable conventions for frontend/backend design, module layering, API calls, configuration, logging, and documentation maintenance.
+A personal fullstack engineering design skill for AI coding assistants, turning project experience into reusable conventions for frontend/backend design, module layering, API calls, configuration, logging, and documentation maintenance.
 
 For a new project, provide business goals, core workflows, permissions, and actual constraints to start from a consistent engineering baseline. For existing projects, apply relevant conventions within the task's scope and let the structure grow with real responsibilities.
 
@@ -28,7 +28,11 @@ For a new project, provide business goals, core workflows, permissions, and actu
 
 Use the smallest sufficient structure. Simple features may use a few files and direct function calls; add abstraction, sharing, and independent services for actual needs. The complete rules live in [SKILL.md](SKILL.md) and its references. These instructions are in English; the skill retains Chinese deliverables and design/feature documentation as a personal convention.
 
-## Install in Codex
+## Installation
+
+The reusable instructions live in `SKILL.md` and `references/`. Install the skill folder through your coding assistant's skill mechanism.
+
+### Codex Example
 
 Prepare Git and ensure your GitHub account has access to this repository. For a first installation, clone it into the user-level skill directory:
 
@@ -47,21 +51,21 @@ Codex discovers the skill in this directory. If it does not appear, restart Code
 
 ## Usage
 
-Invoke the skill explicitly:
+Ask your coding assistant to apply `fullstack-blueprint` to the task, for example:
 
 ```text
-$fullstack-blueprint Design an equipment borrowing system with request, approval, and return workflows.
+Use fullstack-blueprint to design an equipment borrowing system with request, approval, and return workflows.
 ```
 
 ```text
-$fullstack-blueprint Add an order query page and API to the current project, following existing module boundaries and updating affected documentation.
+Use fullstack-blueprint to add an order query page and API to the current project, following existing module boundaries and updating affected documentation.
 ```
 
 ```text
-$fullstack-blueprint Review the project's frontend/backend layering, API calls, configuration, and logging. Report only findings supported by evidence.
+Use fullstack-blueprint to review the project's frontend/backend layering, API calls, configuration, and logging. Report only findings supported by evidence.
 ```
 
-[agents/openai.yaml](agents/openai.yaml) sets `allow_implicit_invocation: true`, allowing Codex to choose the skill when the task matches its description. Include `$fullstack-blueprint` in the request when you want to invoke it explicitly.
+In Codex, [agents/openai.yaml](agents/openai.yaml) sets `allow_implicit_invocation: true`, allowing automatic selection when the task matches the skill description. Use `$fullstack-blueprint` for explicit invocation in Codex.
 
 When Superpowers is installed, its applicable skills govern the current phase while this skill supplies engineering constraints and reuses existing design, plan, confirmation, and verification records. The skill also works independently without Superpowers.
 
@@ -70,7 +74,7 @@ When Superpowers is installed, its applicable skills govern the current phase wh
 | File | Content |
 |---|---|
 | [SKILL.md](SKILL.md) | Scope, task deliverables, core constraints, and documentation consistency |
-| [agents/openai.yaml](agents/openai.yaml) | Display metadata, default prompt, and implicit-invocation policy |
+| [agents/openai.yaml](agents/openai.yaml) | Codex display metadata, default prompt, and implicit-invocation policy |
 | [references/project-baseline.md](references/project-baseline.md) | Default stack and minimal structure for new projects |
 | [references/architecture.md](references/architecture.md) | Business responsibilities, module interfaces, layering choices, and dependency directions |
 | [references/frontend.md](references/frontend.md) | Feature modules, state, shared capabilities, and style ownership |

@@ -5,7 +5,7 @@ description: Use when starting a fullstack project, or building, changing, desig
 
 # Fullstack Engineering Blueprint
 
-Turn personal project experience into a reusable fullstack engineering blueprint: defaults for new projects, module responsibilities, dependency directions, and engineering conventions for design, implementation, and review.
+Turn personal project experience into a reusable fullstack engineering blueprint for AI coding assistants: defaults for new projects, module responsibilities, dependency directions, and engineering conventions for design, implementation, and review.
 
 Use the smallest sufficient structure to make responsibilities, dependencies, and failure handling explicit. Explicit user requirements take priority; otherwise, preserve project naming, public entry points, logging formats, and quality gates.
 
