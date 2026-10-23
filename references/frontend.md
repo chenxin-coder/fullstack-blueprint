@@ -1,36 +1,36 @@
-# 前端设计与模块归属
+# Frontend Design and Module Ownership
 
-## 从用户任务决定界面
+## Start with the User Task
 
-先说明用户在页面完成什么、主要操作是什么、下一步是什么。优先沿用现有控件、路由和视觉变量。明确加载、空数据、无权限、读取失败、提交中、提交失败和成功后的反馈；保留用户输入并提供可执行的恢复动作。
+Explain what the user accomplishes on the page, its primary action, and the next step. Prefer existing controls, routes, and visual tokens. Define feedback for loading, empty data, denied access, read failure, submission in progress, submission failure, and success; preserve user input and offer actionable recovery.
 
-表单区分字段错误与系统错误；危险或难撤销的操作按真实后果设置确认。沿用项目响应式规则，检查窄屏、长文本、键盘操作、表单标签和焦点。新交互不用颜色单独表达状态。
+Distinguish field errors from system errors in forms. Base confirmation for dangerous or hard-to-reverse operations on actual consequences. Follow project responsive conventions and check narrow screens, long text, keyboard use, form labels, and focus. New interactions must communicate state beyond color alone.
 
-## 职责与依赖
+## Responsibilities and Dependencies
 
-| 职责 | 归属 | 提取条件 |
+| Responsibility | Ownership | Extraction criterion |
 |---|---|---|
-| 路由、Provider、页面组合 | 入口或 app | 保持业务规则在所属功能 |
-| 页面与专属组件 | 页面或业务 feature | 一个组件有独立交互职责时拆分 |
-| 业务操作、数据更新协调 | 所属功能中的函数或 hook | 复杂交互或多处调用时提取 |
-| HTTP 机制 | 共用 client | 统一地址、认证机制、超时和错误解析 |
-| 业务 endpoint 声明 | 统一 api 目录中按业务模块分文件 | 路径、请求/响应类型与调用函数就近维护，见 [接口集中维护](http.md#接口集中维护) |
-| 公共 UI 与工具 | 已有 shared 或公共目录 | 多个功能真实复用且不携带某页面业务规则 |
+| Routes, Providers, page composition | Entry point or app | Keep business rules in their feature |
+| Pages and private components | Page or business feature | Split components with an independent interaction responsibility |
+| Business operations and data update coordination | Functions or hooks in the owning feature | Extract for complex interactions or multiple callers |
+| HTTP mechanism | Shared client | Centralize addressing, authentication mechanics, timeouts, and error parsing |
+| Business endpoint definitions | Central API directory, split by business module | Keep paths, request/response types, and request functions together; see [centralized API definitions](http.md#centralized-api-definitions) |
+| Shared UI and tools | Existing shared/common directory | Reused by multiple features without page-specific business rules |
 
-导入依赖默认为页面/功能 → 对应 API 模块 → HTTP client；页面/功能也可依赖公共 UI 和工具，API 与公共能力不反向导入页面或功能内部实现。两个功能需要协作时，优先由组合层协调；项目已有公开入口规则时严格沿用。不要为符合外部样板批量增加或删除 index.ts。
+The default import direction is page/feature → corresponding API module → HTTP client. Pages/features may also depend on shared UI and tools; API and shared capabilities must not import page or feature internals. Prefer the composition layer to coordinate two features, and honor existing public-entry-point rules. Do not bulk-add or remove index.ts files to match an external template.
 
-小项目的页面可直接调用 API 模块中的命名请求函数，无需给每个请求增加 hook/service 包装。功能专属 UI、状态、辅助函数、样式和测试放在一起；接口 DTO 与请求测试随 API 模块维护，共享目录只放跨功能能力。不要把所有业务逻辑集中在 utils、全局 store 或 App 中。
+In a small project, a page may call named API request functions directly; a hook/service wrapper for every request is unnecessary. Keep private UI, state, helpers, styles, and tests with the feature. Keep API DTOs and request tests with the API module, and only cross-feature capabilities in shared code. Avoid concentrating all business logic in utils, a global store, or App.
 
-## 状态归属
+## State Ownership
 
-- 服务端数据由已有查询机制管理；无缓存需求时可用简单请求与局部状态。引入查询库需要实际需求支持。
-- 表单编辑、弹窗、选中项等放到最近的使用者；可分享的筛选与分页优先用 URL 表达。
-- 用户或租户身份进入受保护查询的缓存标识；退出或切换身份时清除相应缓存。
-- 写操作成功后只更新或失效相关数据。乐观更新明确回滚方式；旧请求结果不能覆盖新的搜索或选择。
-- 客户端权限控制用于界面体验，服务端仍须核验访问与操作权限。
+- Manage server data with the existing query mechanism. Simple requests and local state suffice without caching needs; introduce a query library only for a real requirement.
+- Keep form edits, dialogs, selections, and similar state near their consumers. Prefer URL state for shareable filters and pagination.
+- Include user or tenant identity in protected-query cache keys; clear affected caches on logout or identity changes.
+- After writes, update or invalidate only affected data. Define rollback for optimistic updates; stale request results must not overwrite newer searches or selections.
+- Client-side permissions improve the interface; the server must still verify access and operation permissions.
 
-## 样式与验证
+## Styles and Verification
 
-沿用项目的 CSS Modules、样式系统或工具类方案；页面样式局部归属，跨页通用变量集中维护，避免全局追加覆盖规则。
+Follow the project's CSS Modules, styling system, or utility-class conventions. Keep page styles local and cross-page tokens centralized, avoiding accumulated global overrides.
 
-围绕用户行为验证新增交互：加载/失败/成功、重复点击、必要的权限与身份切换。跨接口流程做必要的集成或端到端验证；类型检查通过不能替代交互验证。修改边界约束时复用现有架构测试或 lint 规则，避免重复建立规则体系。
+Verify new interactions through user behavior: loading/failure/success, repeated clicks, and relevant permission or identity changes. Use integration or end-to-end checks where a workflow crosses APIs; passing type checks does not verify interaction behavior. Reuse architecture tests or lint rules when changing boundary constraints rather than creating a duplicate rule system.

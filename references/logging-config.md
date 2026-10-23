@@ -1,36 +1,36 @@
-# 日志与配置
+# Logging and Configuration
 
-## 日志生命周期
+## Logging Lifecycle
 
-启动入口加载并校验配置，配置日志，再创建业务依赖和执行业务行为。模块只获取 logger，不各自新增 handler。检查框架 logger 的 handler 与传播关系，重复初始化不能重复输出；资源关闭与应用退出沿用现有生命周期。
+The startup entry point loads and validates configuration, configures logging, then creates business dependencies and runs business behavior. Modules obtain loggers without adding their own handlers. Check framework logger handlers and propagation; repeated initialization must not duplicate output. Follow existing lifecycle conventions for resource cleanup and application shutdown.
 
-业务日志统一使用 JSON，基础字段固定为 `timestamp/level/service/module/event/request_id`，耗时、状态和稳定业务标识按事件添加。timestamp 使用带时区的 ISO 8601；非请求事件的 request_id 为 null。Python 标准 logging 统一配置，模块只取 logger。
+Use JSON business logs with the fixed base fields `timestamp/level/service/module/event/request_id`; add duration, status, and stable business identifiers per event. Use timezone-aware ISO 8601 timestamps and null request_id for non-request events. Configure Python's standard logging centrally; modules only obtain loggers.
 
-| 级别 | 使用情形 |
+| Level | Use |
 |---|---|
-| DEBUG | 受控诊断，仍遵守敏感信息限制 |
-| INFO | 关键业务结果、启动/关闭和必要操作摘要 |
-| WARNING | 需要关注的降级、异常业务条件或重试耗尽 |
-| ERROR | 未预期失败或无法完成的系统操作，必要时携带安全堆栈 |
+| DEBUG | Controlled diagnostics, still subject to sensitive-data restrictions |
+| INFO | Key business outcomes, startup/shutdown, and necessary operation summaries |
+| WARNING | Degradation, unusual business conditions, or exhausted retries requiring attention |
+| ERROR | Unexpected failures or system operations that cannot complete, with safe stack traces when needed |
 
-一项失败在承担处理责任的边界记录一次；内层增加上下文或抛出错误，避免逐层记录同一堆栈。预期字段校验失败无需全部升级为系统错误。健康检查和高频轮询避免制造业务日志噪声。
+Log a failure once at the boundary responsible for handling it. Inner layers add context or raise errors rather than logging the same stack trace at every layer. Expected field-validation failures need not all become system errors. Avoid noisy business logs from health checks and frequent polling.
 
-按白名单记录安全事件字段、稳定标识、错误码、状态与耗时，不序列化整个对象。排除 Authorization、Cookie、密码、令牌、连接串、原始请求体和业务明细。访问日志优先记录路由模板，过滤查询串；HTTP 客户端调试日志、异常消息及堆栈也可能泄密，应检查并过滤。只脱敏字典字段无法保护原始异常字符串。
+Allowlist safe event fields, stable identifiers, error codes, status, and duration instead of serializing entire objects. Exclude Authorization, Cookie, passwords, tokens, connection strings, raw request bodies, and business details. Prefer route templates in access logs and filter query strings. HTTP-client debug logs, exception messages, and stack traces can also leak data; inspect and filter them. Redacting dictionary fields alone does not protect raw exception strings.
 
-请求 ID 在边界生成或校验后接收，并传播给下游与错误响应；限制外部输入长度与字符，避免日志注入。前端展示安全说明与关联 ID，不记录认证数据。没有现成前端遥测时不默认增加 SDK。
+Generate a request ID at the boundary or validate an incoming one, and propagate it downstream and into error responses. Limit external input length and characters to prevent log injection. The frontend displays safe explanations and the correlation ID without logging authentication data. Do not add a telemetry SDK by default where none exists.
 
-日志统一输出 stdout，由部署环境采集、轮转并维护保留量。业务审计若有持久化要求，应按实际授权和可靠性要求设计，不能仅靠普通可轮转日志替代。
+Write logs to stdout; the deployment environment handles collection, rotation, and retention. If business auditing requires persistence, design for its actual authorization and reliability needs rather than relying solely on ordinary rotating logs.
 
-## 配置生命周期
+## Configuration Lifecycle
 
-1. **后端统一读取 config.yaml**：每个后端应用从自身根目录的 `config.yaml` 加载配置，完成类型、范围、必填和组合校验，产出明确的 settings 对象。必需配置不合法时在启动失败，错误只报告安全字段名与原因。文件不存在或读取失败时给出安全诊断。
-2. **路径固定、来源单一**：配置路径相对应用目录确定，不依赖启动时的工作目录。不读取环境变量、.env，不提供环境变量覆盖、变量插值或回退配置链。应用、日志、数据源和各中间件在同一 `config.yaml` 内使用独立配置段；中间件配置按组件命名，不混入业务函数或拆为另一份配置文件。
-3. **配置绑定与资源装配分责**：`infrastructure/settings.py` 汇总配置模型，将各中间件 YAML 配置段绑定到对应配置类；组件文件的归属见 [中间件接入](backend.md#中间件接入)。业务模块接收注入对象或必要参数，启动入口负责资源创建与关闭；模块导入时不读取 YAML 或建立连接。
-4. **示例与校验同步**：各配置段使用独立严格模型，拒绝未知字段。每个新字段同步维护类型、默认值/必填、范围、示例配置和相应测试。只为实际使用的中间件创建配置段并校验其必需字段。默认值只用于安全且含义稳定的配置；凭据不设可用的生产默认值。
-5. **保护 YAML 中的密钥**：真实凭据保存在服务端或部署环境挂载的私有 YAML 中，限制文件权限并排除版本控制；可提交示例使用无效占位值。settings 使用安全表示，不输出原值。不要将密钥转换为环境变量，也不打印完整配置。
-6. **前端统一走同源代理**：浏览器的业务 API 请求只使用 `/api/v1/...` 相对路径；开发代理与正式 Nginx 网关维护后端目标地址，并按接口归属转发。浏览器通过同一站点入口访问业务服务，不加载部署配置。后端 YAML 仅保留在服务端，数据库口令、签名密钥和服务端令牌不得进入浏览器产物。
-7. **生效时间明确**：后端启动时读取 `config.yaml`，修改后重启所属应用生效。开发代理修改后重启开发服务；正式 Nginx 配置校验通过后重载生效。
+1. **Backends read config.yaml:** Each backend loads its application-root `config.yaml`, validates types, ranges, required fields, and field combinations, and produces an explicit settings object. Invalid required configuration fails startup; errors expose only safe field names and reasons. Give safe diagnostics for missing or unreadable files.
+2. **Fixed path, single source:** Resolve the configuration path relative to the application directory, independently of the launch working directory. Do not read environment variables or .env files, or provide environment overrides, variable interpolation, or fallback chains. Application, logging, data sources, and middleware use separate sections in the same `config.yaml`. Name middleware sections by component; keep them out of business functions and separate configuration files.
+3. **Separate configuration binding from resource composition:** `infrastructure/settings.py` collects configuration models and binds component YAML sections to their settings classes; see [middleware integration](backend.md#middleware-integration) for file ownership. Business modules receive injected objects or required parameters; the startup entry point creates and closes resources. Module imports must not read YAML or establish connections.
+4. **Keep examples and validation synchronized:** Use separate strict models for configuration sections and reject unknown fields. For every new field, maintain its type, default/required status, range, example, and corresponding tests together. Create and validate sections only for middleware actually used. Defaults must be safe and semantically stable; credentials must not have working production defaults.
+5. **Protect secrets in YAML:** Keep real credentials in private server-side or deployment-mounted YAML files, restrict file permissions, and exclude them from version control. Committable examples use invalid placeholders. Use safe settings representations without exposing original values. Do not turn secrets into environment variables or print full configuration.
+6. **Frontend requests use a same-origin proxy:** Browser business API calls use only `/api/v1/...` relative paths. The development proxy and production Nginx gateway maintain backend target addresses and route by API ownership. Browsers access business services through the same site entry point without loading deployment configuration. Keep backend YAML server-side; database passwords, signing keys, and server tokens must not enter browser artifacts.
+7. **State when changes take effect:** Backends read `config.yaml` at startup; restart the owning application after edits. Restart the development server after proxy changes. Validate production Nginx configuration before reloading it.
 
-## 验证落点
+## Verification Targets
 
-日志改动验证 JSON 基础字段、重复初始化、异常只记录一次、关联 ID，以及访问日志/第三方异常中的敏感值不出现。后端配置改动验证有效、缺失、非法、未知字段、固定 YAML 路径及环境变量不能改变配置；中间件配置验证独立配置段及资源初始化/关闭，示例应可在明确的测试条件下加载。前端验证同源请求、代理路由与后端契约一致，服务端密钥不进入浏览器产物。保留相关业务回归，避免把格式字符串匹配当作全部验收。
+For logging changes, verify JSON base fields, repeated initialization, a single log per handled failure, correlation IDs, and absence of sensitive values in access logs and third-party exceptions. For backend configuration, cover valid, missing, invalid, and unknown fields, the fixed YAML path, and the inability of environment variables to change settings. For middleware, verify separate configuration sections and resource startup/shutdown; examples should load under explicit test conditions. For the frontend, check same-origin requests, alignment of proxy routes with backend contracts, and absence of server secrets in browser artifacts. Retain relevant business regression coverage; format-string matching alone is insufficient acceptance evidence.

@@ -1,62 +1,62 @@
-# 前后端调用与契约
+# Frontend-Backend Calls and Contracts
 
-## 调用链与责任
+## Call Chain and Responsibilities
 
-运行时：`用户操作 → 页面/业务函数 → endpoint 函数 → HTTP client → 同源代理 → 后端接口 → 业务处理 → 数据访问`。简单功能可以省去独立的前端业务包装，逻辑责任仍明确。
+Runtime: `user action → page/business function → endpoint function → HTTP client → same-origin proxy → backend API → business logic → data access`. Simple features may omit a separate frontend business wrapper while keeping responsibilities explicit.
 
-HTTP client 负责连接机制；endpoint 函数负责接口类型与地址；页面或业务操作负责用户反馈和刷新。client 不直接操作某个页面的表单、弹窗或缓存。服务端验证授权和业务事实，前端不直接接触数据库或服务端密钥。
+The HTTP client owns transport mechanics; endpoint functions own API types and paths; pages or business operations own user feedback and refreshes. The client must not directly manipulate a page's form, dialog, or cache. The server verifies authorization and business facts; the frontend never accesses databases or server secrets directly.
 
-## 接口集中维护
+## Centralized API Definitions
 
-接口统一在 API 目录维护，内部按业务模块分文件，方便按功能查找。最小示例：
+Keep APIs in a central directory, split by business module so they are easy to find. Minimal example:
 
 ```text
 src/api/
-  client.ts     # 共用 HTTP 机制
-  orders.ts     # 订单路径、接口类型与命名请求函数
-  users.ts      # 用户路径、接口类型与命名请求函数
+  client.ts     # Shared HTTP mechanism
+  orders.ts     # Order paths, API types, and named request functions
+  users.ts      # User paths, API types, and named request functions
 ```
 
-浏览器统一使用同源相对路径 `/api/v1/...`，开发时由开发代理、正式部署由 Nginx 网关按业务服务转发。后端目标地址集中维护在代理和网关配置中，client 只接收相对路径。配置与生效方式见 [配置生命周期](logging-config.md#配置生命周期)。
+Browsers use same-origin `/api/v1/...` relative paths. The development proxy and production Nginx gateway route requests to the owning business services. Keep backend target addresses in proxy/gateway configuration; the client accepts only relative paths. See the [configuration lifecycle](logging-config.md#configuration-lifecycle) for configuration and activation.
 
-各 API 模块就近维护相对路径、HTTP 方法、请求/响应类型及调用函数，每个接口地址有一个权威定义，动态资源路径在对应函数内生成。页面调用 `orders.list()`、`orders.detail(id)` 等命名函数，不拼接域名或重复写路径；API 模块不导入页面状态或 UI 类型。不强制再拆独立的全局 URL 常量表，也不把所有业务接口堆进一个大文件；少量接口可先用一个文件，按实际业务职责增长再拆。
+Keep each API module's relative paths, HTTP methods, request/response types, and request functions together, with one authoritative definition per endpoint. Generate dynamic resource paths in the corresponding function. Pages call named functions such as `orders.list()` and `orders.detail(id)` instead of concatenating domains or repeating paths. API modules must not import page state or UI types. A separate global URL-constant table is unnecessary, and all business APIs must not accumulate in one large file. A few endpoints may start in one file and split as real business responsibilities grow.
 
-## 契约维护
+## Contract Maintenance
 
-新增或修改接口时，沿用现有契约并明确：
+When adding or changing an API, follow the existing contract and specify:
 
-- 方法、路径、认证方式与授权范围。
-- 请求/响应的类型、必填项、可空性、时间格式及分页/排序语义。
-- 错误码、HTTP 状态、用户可见信息与是否可重试；区分业务拒绝、认证失效、网络错误和结果未知。
-- 写操作的重复提交语义，成功后需要刷新的数据。
+- Method, path, authentication, and authorization scope.
+- Request/response types, required fields, nullability, time formats, and pagination/sorting semantics.
+- Error codes, HTTP statuses, user-visible information, and retryability; distinguish business rejection, expired authentication, network failure, and an unknown outcome.
+- Duplicate-submission semantics for writes and the data to refresh after success.
 
-已有 OpenAPI/代码生成时，先改权威 schema，再通过现有命令更新前端产物；不手改生成代码。无生成机制的小项目可维护清晰的类型和契约测试，接口规模或漂移成本上升后再引入生成工具。静态类型不能替代服务端输入校验；不可靠外部响应在适当边界增加运行时校验。
+With existing OpenAPI/code generation, change the authoritative schema first and regenerate frontend artifacts with existing commands; do not hand-edit generated code. Small projects without generation may maintain clear types and contract tests; introduce generation as API size or drift costs warrant it. Static types do not replace server input validation. Validate unreliable external responses at runtime at an appropriate boundary.
 
-成功响应直接使用契约定义的 DTO，不额外增加统一 data 外壳。错误响应统一包含 `code/message/request_id`，HTTP 状态匹配错误语义；字段校验详情放在可选 `details` 中且只返回安全内容。不向浏览器暴露堆栈、SQL 或内部地址。
+Return the contract's DTO directly on success, without a uniform data wrapper. Error responses contain `code/message/request_id`, with HTTP status matching the error semantics. Optional `details` hold safe field-validation information only. Do not expose stack traces, SQL, or internal addresses to browsers.
 
-## 超时与重试
+## Timeouts and Retries
 
-- 写操作超时表示客户端没有及时收到结果，写入可能已经成功。展示“结果待确认”，保留业务意图，通过查询当前状态或安全重放确认，不能直接宣称失败并新建一次操作。读取超时按读取失败处理。
-- client 设置明确超时与取消；服务端操作期限另行控制。取消浏览器请求不表示服务端业务已撤销。
-- 读取的暂时故障可有限重试，使用退避并尊重服务端限流指示。写入只在确认可安全重复时启用自动重试；业务校验或权限拒绝不自动重试。是否安全取决于实际副作用，不能只根据 HTTP 方法名称判断。
+- A write timeout means the client did not receive a result in time; the write may have succeeded. Show a pending-confirmation outcome, preserve the business intent, and confirm it through a status query or safe replay. Do not declare failure and create a new operation. A read timeout is a read failure.
+- Set explicit client timeouts and cancellation; control server operation deadlines separately. Canceling a browser request does not imply server-side business rollback.
+- Transient read failures may use bounded retries with backoff and respect for server rate-limit signals. Retry writes automatically only when safe repetition is established. Do not automatically retry business-validation or permission rejections. Safety depends on actual side effects, not the HTTP method name alone.
 
-## 按操作语义选择防重方式
+## Choose Duplicate Protection by Operation Semantics
 
-| 操作条件 | 最小够用的处理 |
+| Operation condition | Smallest sufficient approach |
 |---|---|
-| 只读取数据 | 无需写入幂等设施 |
-| 对确定资源设置确定值，重复执行没有额外副作用，如设置主题 | 按资源身份原子更新，保持自然幂等，无需新增幂等键和结果表 |
-| 创建操作已有能表示同一业务意图的唯一键，如业务订单号 | 先用数据库唯一约束和事务保证只创建一次，定义重复时返回既有结果或冲突；不强制再建幂等记录表 |
-| 无法由上述方式消除重复副作用，且需要安全重复提交或结果重放，如扣款、累加、无业务唯一键的创建 | 采用幂等键及可靠结果记录，或复用已满足要求的幂等设施 |
+| Read-only | No write-idempotency infrastructure |
+| Set a definite value on a definite resource without extra side effects on repetition, such as a theme | Update atomically by resource identity to preserve natural idempotency; no added idempotency key or result table |
+| Creation already has a unique key representing the same business intent, such as a business order number | Use database uniqueness and transactions to create once; define whether duplicates return the existing result or a conflict, without requiring an extra idempotency table |
+| These approaches cannot remove repeated side effects, and safe resubmission or result replay is needed, such as debits, increments, or creation without a business unique key | Use an idempotency key with reliable result records, or reuse an existing facility that meets the requirements |
 
-前端禁用提交按钮改善体验；服务端按所选方式保障正确性。自然幂等不能防止旧意图的重试覆盖新意图；存在并发编辑或乱序写入时，使用已有版本条件或限制自动重试，明确冲突处理。业务唯一键防重复不等于能重放原响应；确需精确结果重放时再补对应能力。
+Disabling the frontend submit button improves usability; the server guarantees correctness using the selected approach. Natural idempotency does not prevent an old intent's retry from overwriting a newer one. For concurrent edits or out-of-order writes, use existing version conditions or restrict automatic retries and define conflict handling. A business unique key prevents duplicates but does not necessarily replay the original response; add that capability only when exact replay is needed.
 
-**采用幂等键方案时**：同一业务意图及其重试复用同一个键；后端按主体/操作范围绑定键、规范化请求摘要和持久化结果。同键异内容报冲突，同键同内容返回原结果或明确的处理中状态。将记录与业务写入原子关联，明确保留期。存在外部副作用时同时说明外部幂等或结果对账，不把单机内存去重当作跨进程保证。
+**When using idempotency keys:** Reuse one key for the same business intent and its retries. The backend binds the key to the actor/operation scope, a normalized request digest, and a durable result. The same key with different content conflicts; the same key and content returns the original result or an explicit processing state. Atomically associate the record with business writes and define retention. For external side effects, also define external idempotency or outcome reconciliation; single-process in-memory deduplication does not guarantee correctness across processes.
 
-认证机制遵守接口契约；使用 Cookie 时检查 CSRF 与凭证策略。浏览器请求通过同源入口，不以放宽 CORS 或权限解决联调问题。
+Follow the API contract's authentication mechanism. For cookies, check CSRF and credential policies. Route browser requests through the same-origin entry point rather than relaxing CORS or permissions to make integration work.
 
-## 需要结果重放的创建例子
+## Creation Example Requiring Result Replay
 
-订单创建使用 `POST /api/v1/orders`。`OrderCreate` 保留输入并生成业务意图标识，调用 `orders.create()`；client 添加已有认证与幂等头。后端校验授权及数量，业务函数在同一数据库事务中保存订单和幂等结果。成功返回订单并更新订单列表；响应丢失时用原键确认；同键修改数量返回冲突，用户确认新意图后才使用新键。
+Create an order with `POST /api/v1/orders`. `OrderCreate` preserves input, generates a business-intent identifier, and calls `orders.create()`; the client adds the existing authentication and idempotency headers. The backend validates authorization and quantity, and the business function saves the order and idempotency result in one database transaction. Return the order and refresh the order list on success. If the response is lost, confirm with the original key. Changing quantity with the same key conflicts; use a new key only after the user confirms a new intent.
 
-按实际方案选择验证：通用检查是正常结果、业务拒绝、授权、失败反馈与相关缓存更新；自然幂等检查重复同值及必要的乱序冲突；业务唯一键检查并发重复创建；幂等键方案再检查并发同键、异内容冲突和响应丢失后的重放。不为只读或自然幂等操作添加结果记录表。
+Choose verification for the actual approach. Common checks cover normal results, business rejection, authorization, failure feedback, and relevant cache updates. For natural idempotency, check repeated identical values and required out-of-order conflicts. For business unique keys, check concurrent duplicate creation. For idempotency keys, additionally check concurrent identical keys, different-content conflicts, and replay after a lost response. Do not add result tables for read-only or naturally idempotent operations.

@@ -1,44 +1,44 @@
-# 后端职责与分层
+# Backend Responsibilities and Layering
 
-## 先分职责，再分目录
+## Separate Responsibilities Before Directories
 
-接口层处理传输与校验，业务层处理业务规则，数据访问处理数据库及外部系统。新工程按 [默认基线](project-baseline.md#最小工程结构) 组织；模块内按实际职责创建 `api.py`、`service.py`、`data_access.py`、`schemas.py`，不创建没有行为的层。
+The API layer handles transport and validation, business logic owns business rules, and data access handles databases and external systems. Organize new projects using the [default baseline](project-baseline.md#minimal-project-structure). Create `api.py`, `service.py`, `data_access.py`, and `schemas.py` within modules according to actual responsibilities; do not add layers without behavior.
 
-| 职责 | 内容 | 不应承担 |
+| Responsibility | Owns | Must not own |
 |---|---|---|
-| 启动/装配 | 加载配置、初始化日志、创建依赖、注册路由、关闭资源 | 执行具体业务流程 |
-| 接口 | 解析请求、认证入口、校验参数、调用用例、映射响应和错误 | SQL、核心计算、复制业务规则 |
-| 业务 | 权限与业务条件、状态变化、流程及事务语义 | HTTP Request/Response、HTTP 状态码 |
-| 数据访问 | 参数化查询、持久化、外部服务请求与技术错误转换 | 作出与本模块无关的业务决策 |
+| Startup/composition | Configuration loading, logging initialization, dependency creation, route registration, resource shutdown | Specific business workflows |
+| API | Request parsing, authentication entry, parameter validation, use-case calls, response/error mapping | SQL, core calculations, duplicated business rules |
+| Business logic | Permissions and business conditions, state transitions, workflows, transaction semantics | HTTP Request/Response objects or HTTP status codes |
+| Data access | Parameterized queries, persistence, external-service requests, technical error translation | Business decisions outside its module |
 
-简单查询不强制经过只转发参数的 service；可以由薄接口调用明确的数据查询函数。存在计算、授权范围或状态转换时由业务逻辑集中处理。复杂规则独立为普通函数或领域模块，不先创建领域框架。
+Simple queries need not pass through a service that only forwards arguments; a thin API may call a clearly defined query function. Centralize calculations, authorization scope, and state transitions in business logic. Extract complex rules into ordinary functions or domain modules without first building a domain framework.
 
-典型运行时调用：`route → business function → data-access function`。轻量分层中的业务处理可直接依赖具体数据访问函数；隔离外部副作用可先显式传入现有依赖，确有多实现且需要统一调用语义时再引入端口与适配器。纯规则模块独立于 HTTP、ORM 和配置加载。项目已有 domain/ports/adapters 时沿用其依赖约束；涉及模式选择或依赖调整时按 [架构设计参考](architecture.md#分别描述调用与源码依赖) 明确源码导入方向，不从运行时调用顺序推断导入规则。
+Typical runtime calls: `route → business function → data-access function`. With lightweight layering, business logic may depend directly on concrete data-access functions. To isolate external side effects, first pass existing dependencies explicitly; introduce ports and adapters when real multiple implementations require shared calling semantics. Keep pure rule modules independent of HTTP, ORM, and configuration loading. Honor existing domain/ports/adapters constraints. For pattern choices or dependency changes, state source import directions using the [architecture reference](architecture.md#distinguish-calls-from-source-dependencies); do not infer imports from runtime call order.
 
-## 模块与包
+## Modules and Packages
 
-- 业务代码按模块归属聚合，对外只暴露调用方需要的操作。使用公开能力，不依赖其他模块内部状态。
-- 只有一个实际使用者的代码留在该功能；共享包应有真实消费者、清晰职责和独立依赖。禁止通过公共包绕回导入应用内部代码。
-- 接口 DTO、内部业务模型与数据库模型按不同变化原因区分；字段和语义相同且没有独立变化需求时，不为每层复制一套对象。
-- 显式传入配置、数据库连接或需要替换的外部依赖；不要在业务函数内读取全局配置并创建连接。
+- Group business code by owning module and expose only operations callers need. Use public capabilities rather than another module's internal state.
+- Keep code with only one actual consumer in that feature. Shared packages need real consumers, a clear responsibility, and independent dependencies. Do not route imports back into application internals through a shared package.
+- Distinguish API DTOs, internal business models, and database models when they have different reasons to change. Identical fields and semantics without independent variation do not justify copying objects for every layer.
+- Pass configuration, database connections, and replaceable external dependencies explicitly. Do not read global configuration and create connections inside business functions.
 
-## 正确性归属
+## Correctness Ownership
 
-输入模型使用 Pydantic 严格校验并拒绝未知字段，明确必填、可空和默认值；服务端验证资源归属和操作权限。客户端提供的身份、金额、状态或路径标识不等于授权。
+Use strict Pydantic input validation and reject unknown fields; specify required, nullable, and default values. The server verifies resource ownership and operation permissions. Client-supplied identity, amounts, status, or path identifiers do not establish authorization.
 
-事务围绕一个应原子完成的业务操作，由用例界定；数据访问接受事务上下文，不各自提前提交。数据唯一性依赖数据库约束，不能只用“先查再写”处理并发。外部 HTTP 操作不随数据库回滚撤销；若本次确实包含此类副作用，要说明失败后的状态、重试或补偿责任。
+The use case defines the transaction around a business operation that must be atomic. Data access receives its transaction context and does not commit early on its own. Enforce uniqueness with database constraints; check-then-write alone does not handle concurrency. External HTTP operations are not undone by database rollback. When a change includes such side effects, explain resulting states and responsibility for retries or compensation after failures.
 
-可预期业务错误使用稳定错误类型，由接口映射为 [统一错误响应](http.md#契约维护)。未知错误返回安全信息和 request_id，日志由承担处理责任的边界记录。
+Represent expected business errors with stable error types and map them at the API boundary to the [standard error response](http.md#contract-maintenance). Return safe information and request_id for unknown errors; the boundary responsible for handling them owns the log entry.
 
-## 中间件接入
+## Middleware Integration
 
-- 依据实际缓存、异步任务、搜索或对象存储需求选择并追加必要中间件，说明其承担的职责。没有对应需求时不安装依赖或创建配置段。
-- 所有配置在应用自己的 `config.yaml` 中维护，每种中间件使用独立配置段，例如 `middleware.redis`、`middleware.rabbitmq`；字段、示例与校验见 [配置生命周期](logging-config.md#配置生命周期)。
-- 每种中间件一个 `infrastructure/middleware/<component>.py` 文件，包含对应的配置类与接入类，例如 `redis.py` 中的 `RedisSettings`、`RedisResource`。配置类只声明严格字段与校验；接入类接收该配置对象，封装客户端/连接池、SDK 操作与协议转换。
-- `infrastructure/settings.py` 显式导入已使用中间件的配置类，将 YAML 对应配置段绑定到根 Settings，例如 `middleware.redis → RedisSettings`，统一加载并校验。中间件文件不反向导入根 Settings 或业务模块。
-- `main.py` 的应用生命周期显式创建接入类实例并注入业务依赖；每个进程复用自己的资源实例。启动失败释放已创建资源，退出时统一关闭。业务模块使用注入对象提供的操作，不自行读配置、创建连接或执行注册。
-- 中间件配置明确地址、认证、连接/操作超时及所需连接池参数；重试按业务副作用选择。验证初始化与释放、不可达/超时及本次实际使用的操作；消息处理涉及重复投递时验证幂等和失败恢复。
+- Choose and add middleware for actual caching, asynchronous work, search, or object-storage needs, and explain its responsibility. Without a corresponding requirement, do not install dependencies or create configuration sections.
+- Keep all configuration in the application's own `config.yaml`, with a separate section for each component, such as `middleware.redis` or `middleware.rabbitmq`. See the [configuration lifecycle](logging-config.md#configuration-lifecycle) for fields, examples, and validation.
+- Give each component one `infrastructure/middleware/<component>.py` file containing its settings class and resource class, for example `RedisSettings` and `RedisResource` in `redis.py`. The settings class only declares strict fields and validation. The resource class accepts that settings object and encapsulates the client/connection pool, SDK operations, and protocol translation.
+- `infrastructure/settings.py` explicitly imports the settings classes for components in use and binds their YAML sections into the root Settings model, for example `middleware.redis → RedisSettings`, for unified loading and validation. Component files must not import the root Settings model or business modules.
+- The application lifecycle in `main.py` explicitly creates resource instances and injects business dependencies; each process reuses its own instances. Release already-created resources if startup fails and close resources centrally on shutdown. Business modules use injected operations rather than reading configuration, creating connections, or registering resources.
+- Specify addresses, authentication, connection/operation timeouts, and required pool parameters. Choose retries based on business side effects. Verify initialization and cleanup, unavailability/timeouts, and the operations actually used. For duplicate message delivery, verify idempotency and failure recovery.
 
-## 验证
+## Verification
 
-优先从业务函数与 HTTP 入口验证规则和错误映射；数据访问覆盖本次关键事务、查询与约束。架构约束复用现有检查。先写能复现新增/修改行为的测试，再实施；从项目实际命令确认类型检查、测试与构建覆盖范围。
+Verify rules and error mapping through business functions and HTTP entry points first. Cover the change's key transactions, queries, and constraints in data-access checks. Reuse existing architecture checks. Write tests that exercise new or changed behavior before implementation; use actual project commands to establish type-check, test, and build coverage.

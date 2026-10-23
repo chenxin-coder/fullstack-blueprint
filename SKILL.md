@@ -1,49 +1,49 @@
 ---
 name: fullstack-blueprint
-description: Use when starting a fullstack project, or building, changing, designing, or reviewing application architecture, frontend pages/components, backend APIs/business modules, middleware integration, module layering, frontend-to-backend calls, application logging, YAML configuration, or consistency between business documentation and implementation. 新项目初始化、架构设计、功能变更、模块重构、中间件接入、日志与配置维护、文档与代码一致性检查时适用。 Excludes unrelated prose or typo-only edits, pure algorithms, standalone scripts unrelated to these concerns, and non-software tasks.
+description: Use when starting a fullstack project, or building, changing, designing, or reviewing application architecture, frontend pages/components, backend APIs/business modules, middleware integration, module layering, frontend-to-backend calls, application logging, YAML configuration, or consistency between business documentation and implementation. Excludes unrelated prose or typo-only edits, pure algorithms, standalone scripts unrelated to these concerns, and non-software tasks.
 ---
 
-# 全栈工程蓝图
+# Fullstack Engineering Blueprint
 
-将个人项目经验沉淀为可复用的全栈工程蓝图，提供新项目默认基线、模块职责、依赖方向和工程约定，并用于后续设计、实施与审核。
+Turn personal project experience into a reusable fullstack engineering blueprint: defaults for new projects, module responsibilities, dependency directions, and engineering conventions for design, implementation, and review.
 
-以最小够用的结构明确职责、依赖和失败处理。用户明确要求优先，默认沿用项目命名、公开入口、日志格式及质量门禁。
+Use the smallest sufficient structure to make responsibilities, dependencies, and failure handling explicit. Explicit user requirements take priority; otherwise, preserve project naming, public entry points, logging formats, and quality gates.
 
-## 使用与交付
+## Usage and Deliverables
 
-从请求和已确认上下文识别设计、审核或实施及本次范围；仅在缺失信息阻碍正确处理时提问。读取适用的 AGENTS.md、相关现行文档、实现、契约和测试，按下表加载必要章节。区分事实、约束和建议，资料不足时注明假设。
+Identify whether the request is design, review, or implementation, and determine its scope from the request and confirmed context. Ask only when missing information prevents correct work. Read applicable AGENTS.md files, relevant current documentation, implementation, contracts, and tests; load references using the table below. Distinguish facts, constraints, and recommendations, and state assumptions where evidence is incomplete.
 
-| 任务 | 处理与输出 |
+| Task | Work and output |
 |---|---|
-| 设计 | 给出选择依据、必要模块职责与依赖、行为约定及验收方式；业务代码实施以用户请求为准 |
-| 审核 | 按影响列出问题位置/证据、影响和最小建议；区分违规、可选优化及待验证疑点，无问题则如实说明；不改文件 |
-| 实施 | 完成已授权改动，核对本次涉及的职责、依赖、契约及失败处理；报告实际变化、必要取舍、文档同步或无需更新的依据、实际验证及未验证部分 |
+| Design | Explain choices, necessary module responsibilities and dependencies, behavior contracts, and acceptance criteria; implement business code only as requested by the user |
+| Review | Rank findings by impact and provide locations/evidence, consequences, and minimal recommendations; distinguish violations, optional improvements, and unverified concerns, and report honestly when there are no findings; do not edit files |
+| Implementation | Complete authorized changes and check the affected responsibilities, dependencies, contracts, and failure handling; report actual changes, necessary tradeoffs, documentation updates or reasons none are needed, verification performed, and unverified areas |
 
-用中文交付并保留准确标识。局部任务几句话即可，无需套用整套标题；涉及关系时标明运行时调用或源码依赖，只展示相关部分。设计/审核不自动生成脚手架、添加依赖或提交代码。
+Deliver in Chinese while preserving exact identifiers. A few sentences suffice for a local task; do not impose a full set of headings. Label relationships as runtime calls or source dependencies and show only relevant parts. Design and review do not by themselves authorize scaffolding, dependency installation, or code commits.
 
-## 核心约束
+## Core Constraints
 
-- 在本次任务范围内应用统一规范。按业务归属组织代码，层与目录按实际职责增加；少量文件、简单函数及直接依赖均可用。共享与抽象基于真实复用或变化需求，架构参考中的模式按条件选择。
-- 前端统一使用同源 `/api/v1/...`，由开发代理和正式网关转发；后端各自从应用根目录的 `config.yaml` 加载并校验配置，不使用环境变量、.env 或覆盖链。
-- Superpowers 可用时，由其适用技能控制当前阶段，本 skill 提供相关工程约束。复用设计、计划、确认和验证记录，将代码、文档与验收纳入同一任务；不重复流程/确认，不跳过尚未满足的要求，也不强制跑完整链路。不可用时按本 skill 执行，无需额外安装。故障先诊断，业务行为修改测试先行，完成结论以实际验证为据。
+- Apply these conventions within the task's scope. Organize code by business ownership; add layers and directories for actual responsibilities. A few files, simple functions, and direct dependencies are valid. Share and abstract for real reuse or variation needs; select architecture patterns under their stated conditions.
+- Frontend requests use same-origin `/api/v1/...`, forwarded by the development proxy and production gateway. Each backend loads and validates its application-root `config.yaml`; do not use environment variables, .env files, or override chains.
+- When Superpowers is available, its applicable skills govern the current phase; this skill supplies relevant engineering constraints. Reuse design, plan, confirmation, and verification records, keeping code, documentation, and acceptance in the same task. Avoid duplicate workflows or confirmations, honor outstanding requirements, and do not force the entire pipeline. Without Superpowers, follow this skill without requiring another installation. Diagnose failures first, write tests before business behavior changes, and base completion claims on actual verification.
 
-## 文档与业务逻辑一致性
+## Documentation and Business Logic Consistency
 
-- 定位本次受影响的 README、架构/功能/接口说明、配置/运行示例和代码注释。结合已确认需求、规则、契约、实现与测试判断应修哪方；不能仅凭旧文档或测试通过认定行为正确。
-- 行为、职责、调用、接口、权限、状态、错误、日志、配置或运行方式变化时，同次更新现行说明及示例，缺少必要说明时就近补最小文档。纯内部调整未改变文档约定时说明无需更新的依据。
-- 规划标明尚未实现；历史设计、评审和回放保留当时事实，必要时补现行指引。
-- 对照“本次变化 → 实现/测试证据 → 现行文档位置”，核对字段、示例、边界与运行命令，并适当验证可执行例子。受影响内容仍矛盾时不报告完成；仅报告实际核查范围及未验证项。
+- Locate affected README sections, architecture/feature/API documentation, configuration/run examples, and code comments. Use confirmed requirements, rules, contracts, implementation, and tests to decide which side needs correction; old documentation or passing tests alone do not establish correctness.
+- When behavior, responsibilities, calls, interfaces, permissions, state, errors, logging, configuration, or operation changes, update current explanations and examples in the same change. Add minimal documentation near the relevant material when needed. For internal changes that leave documented contracts intact, explain why no update is required.
+- Mark plans as unimplemented. Preserve historical facts in past designs, reviews, and replay records, adding current guidance when needed.
+- Check “change → implementation/test evidence → current documentation location” for fields, examples, boundaries, and run commands, and verify executable examples where appropriate. Do not report completion while affected material remains contradictory; state the actual review scope and unverified items.
 
-## 按需参考
+## References on Demand
 
-| 涉及内容 | 读取内容 |
+| Concern | Read |
 |---|---|
-| 新建项目或初始化工程 | [project-baseline.md](references/project-baseline.md)，再按业务确定 [架构职责](references/architecture.md) |
-| 新业务模块职责/接口/依赖设计、模块边界重构或分层审核 | [architecture.md](references/architecture.md) |
-| 前端页面、组件、状态或样式 | [frontend.md](references/frontend.md) |
-| 后端模块、业务规则、数据访问、事务或中间件接入 | [backend.md](references/backend.md) |
-| 接口新增/修改/审核、联调、请求失败或重复提交 | [http.md](references/http.md) |
-| 日志或异常记录 | [logging-config.md：日志生命周期](references/logging-config.md#日志生命周期) |
-| 后端 YAML 配置、中间件配置、代理配置或应用初始化 | [logging-config.md：配置生命周期](references/logging-config.md#配置生命周期) |
+| New project or project initialization | [project-baseline.md](references/project-baseline.md), then [architecture responsibilities](references/architecture.md) as required by the business |
+| New module responsibilities/interfaces/dependencies, boundary refactoring, or layering review | [architecture.md](references/architecture.md) |
+| Frontend pages, components, state, or styles | [frontend.md](references/frontend.md) |
+| Backend modules, business rules, data access, transactions, or middleware integration | [backend.md](references/backend.md) |
+| API additions/changes/review, integration, request failures, or duplicate submissions | [http.md](references/http.md) |
+| Logging or exception recording | [logging-config.md: Logging Lifecycle](references/logging-config.md#logging-lifecycle) |
+| Backend YAML configuration, middleware/proxy configuration, or application initialization | [logging-config.md: Configuration Lifecycle](references/logging-config.md#configuration-lifecycle) |
 
-只读相关章节，按影响选择验证项并遵守项目检查要求；局部字段、样式或日志修改不自动加载架构参考。查询借鉴来源时才读 [sources.md](references/sources.md)。
+Read only relevant sections, choose verification by impact, and follow project checks. Local field, style, or log changes do not automatically require the architecture reference. Read [sources.md](references/sources.md) only when consulting the sources of these conventions.

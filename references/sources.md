@@ -1,20 +1,20 @@
-# 借鉴来源与适用边界
+# Sources and Scope
 
-查阅日期：2026-10-23。以下是一手仓库资料的设计思想摘要，均用本 skill 的中文规则重新表达；不复制实现、第三方提示词或完整模板。分支链接可能随上游更新，本 skill 不宣称始终与上游同步。
+Sources consulted: 2026-10-23. The following summaries draw design ideas from primary repositories and restate them as this skill's own conventions, without copying implementations, third-party prompts, or complete templates. Branch links may change upstream; this skill does not claim continuous synchronization.
 
-| 来源 | 采纳的思想 | 本 skill 的取舍 |
+| Source | Adopted idea | Choices in this skill |
 |---|---|---|
-| [Bulletproof React：目录](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md) | 业务聚合、单向依赖、仅创建所需目录 | 不固定完整 features 子目录；已有公开入口规则优先，不照搬直接导入策略 |
-| [Bulletproof React：请求层](https://github.com/alan2207/bulletproof-react/blob/master/docs/api-layer.md) | 共用 client，明确 endpoint 类型与请求声明 | query hook 按状态与缓存需求引入，不给单次请求增加空包装 |
-| [FastAPI 全栈模板：前端说明](https://github.com/fastapi/full-stack-fastapi-template/blob/master/frontend/README.md) | 后端 OpenAPI 与生成客户端同步 | 保持 OpenAPI 与前端类型同步，不复制模板的其他技术选型 |
-| [FastAPI 全栈模板：配置](https://github.com/fastapi/full-stack-fastapi-template/blob/master/backend/app/core/config.py) | 类型化配置、配置有效性校验 | 仅借鉴校验思想，使用 YAML 唯一来源；不照搬环境变量、导入时实例化或忽略额外字段 |
-| [Node Best Practices：分层](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/projectstructre/createlayers.md) | 传输入口、业务处理、数据访问分责 | 将三类职责用于设计判断，不要求三个目录或所有调用都经过包装层 |
-| [Node Best Practices：日志](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/smartlogging.md) | 有意义的事件、结构化上下文和关联标识 | 按需采用；不自动引入特定日志库、APM 或集中日志集群 |
-| [Node Best Practices：配置](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/projectstructre/configguide.md) | 配置分组、密钥隔离、尽早校验 | 舍弃文件与环境变量合并；明确采用 YAML 加载，无环境变量覆盖链 |
-| [Anthropic：Skill Creator](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md) | 短入口、按需参考、真实任务验证 | 保持技能自包含，无必需联网、插件或其他 skill 依赖 |
+| [Bulletproof React: project structure](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md) | Group by business capability, use one-way dependencies, and create only needed directories | No fixed full feature subdirectory tree; existing public-entry-point rules take priority over the source's direct-import policy |
+| [Bulletproof React: API layer](https://github.com/alan2207/bulletproof-react/blob/master/docs/api-layer.md) | Shared client, explicit endpoint types, and request definitions | Add query hooks for actual state/caching needs rather than empty wrappers around individual requests |
+| [FastAPI full-stack template: frontend](https://github.com/fastapi/full-stack-fastapi-template/blob/master/frontend/README.md) | Synchronize backend OpenAPI and generated clients | Keep OpenAPI and frontend types aligned without adopting the template's other technology choices |
+| [FastAPI full-stack template: configuration](https://github.com/fastapi/full-stack-fastapi-template/blob/master/backend/app/core/config.py) | Typed configuration and validity checks | Adopt validation principles with YAML as the only source; omit environment loading, import-time instantiation, and ignored extra fields |
+| [Node Best Practices: layering](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/projectstructre/createlayers.md) | Separate transport, business logic, and data access | Use these responsibilities to guide design without requiring three directories or wrappers on every call |
+| [Node Best Practices: logging](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/smartlogging.md) | Meaningful events, structured context, and correlation identifiers | Apply as needed without automatically adding a logging library, APM, or centralized logging cluster |
+| [Node Best Practices: configuration](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/projectstructre/configguide.md) | Group configuration, isolate secrets, and validate early | Use YAML loading without file/environment merging or environment override chains |
+| [Anthropic: Skill Creator](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md) | Short entry point, on-demand references, and realistic task validation | Keep the skill self-contained without mandatory network, plugin, or other skill dependencies |
 
-## 当前项目提供的个人偏好
+## Personal Conventions from the Original Project
 
-新项目使用 [个人默认基线](project-baseline.md)。职责清晰、测试先行、当前契约直接实现、抽象基于现实需要；日志先初始化且只记安全标识。前端统一使用同源 API，由开发代理和正式 Nginx 网关转发；后端各自读取应用根目录的 `config.yaml`，中间件在同一文件中独立分段维护。配置不使用环境变量或覆盖链。
+Use the [personal default baseline](project-baseline.md) for new projects. Keep responsibilities clear, write tests first, target the current contract directly, and abstract for actual needs. Initialize logging first and record only safe identifiers. Frontend calls use same-origin APIs through the development proxy and production Nginx gateway. Each backend reads its application-root `config.yaml`, with separate middleware sections in the same file. Do not use environment variables or override chains for configuration.
 
-Sphere 四层决策模型、共享数据库账户、特定 schema/表名、应用拆分和离线评估权限属于原项目。此 skill 不携带这些领域规定，也不为新项目添加 Sphere 命名。使用时仍需读取所在仓库的最新 AGENTS.md 和实际检查入口。
+Sphere's four-layer decision model, shared database account, specific schemas/table names, application splits, and offline evaluation authority belong to the original project. This skill does not carry those domain rules or impose Sphere naming on new projects. Read the current repository's latest AGENTS.md and actual check entry points when applying it.
