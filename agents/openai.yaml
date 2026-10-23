@@ -1,0 +1,6 @@
+interface:
+  display_name: "全栈工程蓝图"
+  short_description: "以 React 与 Python 为默认起点，统一分层、接口、中间件、配置、日志及文档一致性"
+  default_prompt: "请用 $fullstack-blueprint 处理当前项目需求：新项目按默认基线起步，局部任务只应用相关约定，并按设计、实施或审核类型交付结果与验证依据。"
+policy:
+  allow_implicit_invocation: true
