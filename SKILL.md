@@ -1,5 +1,6 @@
 ---
 name: fullstack-blueprint
+license: MIT
 description: Use when starting a fullstack project, or building, changing, designing, or reviewing application architecture, frontend pages/components, backend APIs/business modules, middleware integration, module layering, frontend-to-backend calls, application logging, YAML configuration, or consistency between business documentation and implementation. Excludes unrelated prose or typo-only edits, pure algorithms, standalone scripts unrelated to these concerns, and non-software tasks.
 ---
 
