@@ -5,7 +5,7 @@ description: Use when starting a fullstack project, or building, changing, desig
 
 # Fullstack Engineering Blueprint
 
-Turn personal project experience into a reusable fullstack engineering blueprint for AI coding assistants: defaults for new projects, module responsibilities, dependency directions, and engineering conventions for design, implementation, and review.
+Apply a fullstack engineering blueprint for design, implementation, and review: defaults for new projects, module responsibilities, dependency directions, and engineering conventions.
 
 Use the smallest sufficient structure to make responsibilities, dependencies, and failure handling explicit. Explicit user requirements take priority; otherwise, preserve project naming, public entry points, logging formats, and quality gates.
 
@@ -19,7 +19,7 @@ Identify whether the request is design, review, or implementation, and determine
 | Review | Rank findings by impact and provide locations/evidence, consequences, and minimal recommendations; distinguish violations, optional improvements, and unverified concerns, and report honestly when there are no findings; do not edit files |
 | Implementation | Complete authorized changes and check the affected responsibilities, dependencies, contracts, and failure handling; report actual changes, necessary tradeoffs, documentation updates or reasons none are needed, verification performed, and unverified areas |
 
-Deliver in Chinese while preserving exact identifiers. A few sentences suffice for a local task; do not impose a full set of headings. Label relationships as runtime calls or source dependencies and show only relevant parts. Design and review do not by themselves authorize scaffolding, dependency installation, or code commits.
+Use the user's requested language, or the language of their request when unspecified. Follow established project language conventions for maintained documents, and preserve exact identifiers. A few sentences suffice for a local task; do not impose a full set of headings. Label relationships as runtime calls or source dependencies and show only relevant parts. Design and review do not by themselves authorize scaffolding, dependency installation, or code commits.
 
 ## Core Constraints
 

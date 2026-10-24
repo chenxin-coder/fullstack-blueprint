@@ -1,6 +1,6 @@
 # Default Baseline for New Projects
 
-Start new projects with the following personal engineering conventions. The user supplies business goals, core workflows, permissions, and other actual constraints. Incorporate business design into the current Superpowers phase; do not ask again about settled engineering choices. For local changes, load only relevant conventions.
+Start new projects with the engineering conventions below. The user supplies business goals, core workflows, permissions, and other actual constraints. Incorporate business design into the current Superpowers phase; do not ask again about settled engineering choices. For local changes, load only relevant conventions.
 
 ## Fixed Starting Point
 
@@ -45,4 +45,4 @@ Describe core operations, invariants, module ownership, interfaces, and data own
 
 Once implementation is authorized, establish configuration validation, logging, and resource lifecycle first. Then connect a real feature's page, API, business logic, and data access, verifying normal results, rejection, and failures. A design-only task delivers a proposal. Add middleware under the [integration rules](backend.md#middleware-integration), with all configuration in the same `config.yaml`.
 
-Record project purpose, startup commands, and check commands in README. Keep only project-specific boundaries and quality requirements in AGENTS.md rather than copying the entire skill. Write design and feature documentation in Chinese. Run type checks, relevant tests, and builds, and report actual results.
+Record project purpose, startup commands, and check commands in README. Keep only project-specific boundaries and quality requirements in AGENTS.md rather than copying the entire skill. Follow the project's language conventions for design and feature documentation. Run type checks, relevant tests, and builds, and report actual results.

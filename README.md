@@ -1,6 +1,6 @@
 # fullstack-blueprint · Fullstack Engineering Blueprint
 
-A personal fullstack engineering design skill for AI coding assistants, turning project experience into reusable conventions for frontend/backend design, module layering, API calls, configuration, logging, and documentation maintenance.
+A fullstack engineering design skill for AI coding assistants, with reusable conventions for frontend/backend design, module layering, API calls, configuration, logging, and documentation maintenance.
 
 For a new project, provide business goals, core workflows, permissions, and actual constraints to start from a consistent engineering baseline. For existing projects, apply relevant conventions within the task's scope and let the structure grow with real responsibilities.
 
@@ -26,7 +26,7 @@ For a new project, provide business goals, core workflows, permissions, and actu
 | Logging | Structured JSON to stdout with stable identifiers and request_id; the responsible boundary logs each failure, with sensitive data filtered |
 | Documentation consistency | Update affected current explanations and examples alongside behavior or convention changes, checking them against implementation and verification evidence |
 
-Use the smallest sufficient structure. Simple features may use a few files and direct function calls; add abstraction, sharing, and independent services for actual needs. The complete rules live in [SKILL.md](SKILL.md) and its references. These instructions are in English; the skill retains Chinese deliverables and design/feature documentation as a personal convention.
+Use the smallest sufficient structure. Simple features may use a few files and direct function calls; add abstraction, sharing, and independent services for actual needs. The complete rules live in [SKILL.md](SKILL.md) and its references.
 
 ## Installation
 
@@ -34,7 +34,7 @@ The reusable instructions live in `SKILL.md` and `references/`. Install the skil
 
 ### Codex Example
 
-Prepare Git and ensure your GitHub account has access to this repository. For a first installation, clone it into the user-level skill directory:
+With Git installed, clone the repository into the user-level skill directory:
 
 ```bash
 mkdir -p ~/.agents/skills

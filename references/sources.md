@@ -1,6 +1,6 @@
 # Sources and Scope
 
-Sources consulted: 2026-10-23. The following summaries draw design ideas from primary repositories and restate them as this skill's own conventions, without copying implementations, third-party prompts, or complete templates. Branch links may change upstream; this skill does not claim continuous synchronization.
+References reviewed: 2026-10-23. The following primary sources inform specific design choices. The table records the adopted ideas and how they apply to this skill.
 
 | Source | Adopted idea | Choices in this skill |
 |---|---|---|
@@ -13,8 +13,6 @@ Sources consulted: 2026-10-23. The following summaries draw design ideas from pr
 | [Node Best Practices: configuration](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/projectstructre/configguide.md) | Group configuration, isolate secrets, and validate early | Use YAML loading without file/environment merging or environment override chains |
 | [Anthropic: Skill Creator](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md) | Short entry point, on-demand references, and realistic task validation | Keep the skill self-contained without mandatory network, plugin, or other skill dependencies |
 
-## Personal Conventions from the Original Project
+## Scope of Adoption
 
-Use the [personal default baseline](project-baseline.md) for new projects. Keep responsibilities clear, write tests first, target the current contract directly, and abstract for actual needs. Initialize logging first and record only safe identifiers. Frontend calls use same-origin APIs through the development proxy and production Nginx gateway. Each backend reads its application-root `config.yaml`, with separate middleware sections in the same file. Do not use environment variables or override chains for configuration.
-
-Sphere's four-layer decision model, shared database account, specific schemas/table names, application splits, and offline evaluation authority belong to the original project. This skill does not carry those domain rules or impose Sphere naming on new projects. Read the current repository's latest AGENTS.md and actual check entry points when applying it.
+Use the [default baseline](project-baseline.md) for new projects. Derive domain models, data ownership, service boundaries, and naming from the target project's requirements, contracts, and AGENTS.md. Use that project's check commands for verification.
