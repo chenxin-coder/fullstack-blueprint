@@ -30,9 +30,13 @@ Use the smallest sufficient structure. Simple features may use a few files and d
 
 ## Installation
 
-The reusable instructions live in `SKILL.md` and `references/`. Install the skill folder through your coding assistant's skill mechanism.
+The shared skill consists of `SKILL.md` and `references/`. Keep them together when installing or packaging the skill. Each assistant uses its own installation and invocation mechanism.
 
-### Codex Example
+[agents/openai.yaml](agents/openai.yaml) provides optional OpenAI-specific display metadata, a default prompt, and invocation policy. The engineering rules live in the shared files. See the [official metadata documentation](https://learn.chatgpt.com/docs/build-skills#optional-metadata) for the supported fields.
+
+The clone commands below assume the destination directory does not exist.
+
+### Codex
 
 With Git installed, clone the repository into the user-level skill directory:
 
@@ -41,13 +45,36 @@ mkdir -p ~/.agents/skills
 git clone https://github.com/chenxin-coder/fullstack-blueprint.git ~/.agents/skills/fullstack-blueprint
 ```
 
-Use these commands only when the target directory does not exist. For an existing installation, handle local changes before updating:
+For an existing installation, handle local changes before updating:
 
 ```bash
 git -C ~/.agents/skills/fullstack-blueprint pull --ff-only
 ```
 
-Codex discovers the skill in this directory. If it does not appear, restart Codex and check again. See the [official Codex skill documentation](https://learn.chatgpt.com/docs/build-skills#where-to-save-skills) for user-level directories and loading behavior.
+Invoke it with `$fullstack-blueprint`. The included metadata enables implicit invocation when the task matches the description. If the skill does not appear, restart Codex and check again. See the [official Codex skill documentation](https://learn.chatgpt.com/docs/build-skills#where-to-save-skills) for user-level directories and loading behavior.
+
+### Claude Code
+
+Clone the repository into Claude Code's personal skill directory:
+
+```bash
+mkdir -p ~/.claude/skills
+git clone https://github.com/chenxin-coder/fullstack-blueprint.git ~/.claude/skills/fullstack-blueprint
+```
+
+Invoke it with `/fullstack-blueprint`, or let Claude select it when the task matches the description. See the [official Claude Code skill documentation](https://code.claude.com/docs/en/skills) for discovery and invocation behavior.
+
+### WorkBuddy
+
+From a local Git checkout of this repository, create a ZIP package of the committed skill files:
+
+```bash
+git archive --format=zip --prefix=fullstack-blueprint/ --output=../fullstack-blueprint.zip HEAD
+```
+
+In WorkBuddy, open the skills page, choose **Add Skill > Upload Skill**, and select the ZIP file. Keep `SKILL.md` and the complete `references/` directory in the package. After importing, locate the skill in the installed list, enable it, and ask WorkBuddy to use `fullstack-blueprint` for the task. See the [official WorkBuddy skill guide](https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market) for local package import and management.
+
+Marketplace publication follows the separate [WorkBuddy Open Platform requirements](https://open.workbuddy.cn/en/docs/skill), including its required listing metadata.
 
 ## Usage
 
@@ -65,8 +92,6 @@ Use fullstack-blueprint to add an order query page and API to the current projec
 Use fullstack-blueprint to review the project's frontend/backend layering, API calls, configuration, and logging. Report only findings supported by evidence.
 ```
 
-In Codex, [agents/openai.yaml](agents/openai.yaml) sets `allow_implicit_invocation: true`, allowing automatic selection when the task matches the skill description. Use `$fullstack-blueprint` for explicit invocation in Codex.
-
 When Superpowers is installed, its applicable skills govern the current phase while this skill supplies engineering constraints and reuses existing design, plan, confirmation, and verification records. The skill also works independently without Superpowers.
 
 ## Contents
@@ -74,7 +99,7 @@ When Superpowers is installed, its applicable skills govern the current phase wh
 | File | Content |
 |---|---|
 | [SKILL.md](SKILL.md) | Scope, task deliverables, core constraints, and documentation consistency |
-| [agents/openai.yaml](agents/openai.yaml) | Codex display metadata, default prompt, and implicit-invocation policy |
+| [agents/openai.yaml](agents/openai.yaml) | Optional OpenAI-specific display metadata, default prompt, and invocation policy |
 | [references/project-baseline.md](references/project-baseline.md) | Default stack and minimal structure for new projects |
 | [references/architecture.md](references/architecture.md) | Business responsibilities, module interfaces, layering choices, and dependency directions |
 | [references/frontend.md](references/frontend.md) | Feature modules, state, shared capabilities, and style ownership |
