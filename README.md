@@ -20,7 +20,17 @@ Implicit invocation covers new-project design/build and continued work in projec
 
 The shared skill consists of `SKILL.md` and `references/`. Keep them together when installing or packaging the skill. Each assistant uses its own installation and invocation mechanism.
 
-The clone commands below assume the destination directory does not exist.
+### Skills CLI
+
+With Node.js 22.20 or later, run this from the project where you want to use the skill:
+
+```bash
+npx skills add chenxin-coder/fullstack-blueprint
+```
+
+Select a supported coding assistant when prompted. The CLI installs into the current project by default; add `--global` to make the skill available across projects. See the [official Skills CLI documentation](https://github.com/vercel-labs/skills#install-a-skill) for installation options.
+
+The per-assistant sections below provide manual installation methods. Choose one installation method. The clone commands assume the destination directory does not exist.
 
 ### Codex
 
