@@ -1,5 +1,7 @@
 # Backend Responsibilities and Layering
 
+For existing backends, use the current language, framework, module layout, configuration sources, and lifecycle. The Python/Pydantic file names below illustrate the new-project baseline; use equivalent existing mechanisms in Java, Node, or other stacks. Review responsibility and behavior rather than conformity to these example names.
+
 ## Separate Responsibilities Before Directories
 
 The API layer handles transport and validation, business logic owns business rules, and data access handles databases and external systems. Organize new projects using the [default baseline](project-baseline.md#minimal-project-structure). Create `api.py`, `service.py`, `data_access.py`, and `schemas.py` within modules according to actual responsibilities; do not add layers without behavior.
@@ -24,13 +26,15 @@ Typical runtime calls: `route → business function → data-access function`. W
 
 ## Correctness Ownership
 
-Use strict Pydantic input validation and reject unknown fields; specify required, nullable, and default values. The server verifies resource ownership and operation permissions. Client-supplied identity, amounts, status, or path identifiers do not establish authorization.
+Validate inputs with the project's framework and contract; specify required, nullable, and default values and deliberate handling of unknown fields. For the new Python baseline, use strict Pydantic validation and reject unknown fields. The server verifies resource ownership and operation permissions. Client-supplied identity, amounts, status, or path identifiers do not establish authorization.
 
 The use case defines the transaction around a business operation that must be atomic. Data access receives its transaction context and does not commit early on its own. Enforce uniqueness with database constraints; check-then-write alone does not handle concurrency. External HTTP operations are not undone by database rollback. When a change includes such side effects, explain resulting states and responsibility for retries or compensation after failures.
 
 Represent expected business errors with stable error types and map them at the API boundary to the [standard error response](http.md#contract-maintenance). Return safe information and request_id for unknown errors; the boundary responsible for handling them owns the log entry.
 
 ## Middleware Integration
+
+Extend the existing configuration binding and resource composition first. The config.yaml sections and Python file layout below apply when using the new-project baseline; adapt ownership and cleanup to the current framework without introducing a parallel settings system.
 
 - Choose and add middleware for actual caching, asynchronous work, search, or object-storage needs, and explain its responsibility. Without a corresponding requirement, do not install dependencies or create configuration sections.
 - Keep all configuration in the application's own `config.yaml`, with a separate section for each component, such as `middleware.redis` or `middleware.rabbitmq`. See the [configuration lifecycle](logging-config.md#configuration-lifecycle) for fields, examples, and validation.

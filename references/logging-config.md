@@ -1,5 +1,11 @@
 # Logging and Configuration
 
+## Existing Projects
+
+Use the project's established configuration sources, precedence, validation framework, secret delivery, logging schema, and deployment lifecycle. For example, keep Spring profiles in a Spring application and validated environment/secret-manager configuration where that is the project contract. Preserve existing correlation identifiers such as trace_id and logger integrations. Changes extend those mechanisms within the authorized scope; a convention differing from this blueprint is not itself a defect.
+
+The following concrete file names, Python logging setup, JSON fields, proxy choices, and restart rules are defaults for new projects without a specified convention. Apply validation, secret protection, clear resource ownership, and safe failure logging within either project's mechanisms.
+
 ## Logging Lifecycle
 
 The startup entry point loads and validates configuration, configures logging, then creates business dependencies and runs business behavior. Modules obtain loggers without adding their own handlers. Check framework logger handlers and propagation; repeated initialization must not duplicate output. Follow existing lifecycle conventions for resource cleanup and application shutdown.
@@ -33,4 +39,4 @@ Write logs to stdout; the deployment environment handles collection, rotation, a
 
 ## Verification Targets
 
-For logging changes, verify JSON base fields, repeated initialization, a single log per handled failure, correlation IDs, and absence of sensitive values in access logs and third-party exceptions. For backend configuration, cover valid, missing, invalid, and unknown fields, the fixed YAML path, and the inability of environment variables to change settings. For middleware, verify separate configuration sections and resource startup/shutdown; examples should load under explicit test conditions. For the frontend, check same-origin requests, alignment of proxy routes with backend contracts, and absence of server secrets in browser artifacts. Retain relevant business regression coverage; format-string matching alone is insufficient acceptance evidence.
+Choose checks for the affected mechanism. For logging changes, verify the chosen log schema, repeated initialization, a single log per handled failure, correlation IDs, and absence of sensitive values in access logs and third-party exceptions. For configuration, cover valid, missing, invalid, and unknown fields as supported by the project's validation contract, plus its actual source precedence and activation behavior. With the new-project YAML-only baseline, also verify the fixed path and that environment variables cannot override settings. For middleware, verify settings ownership and resource startup/shutdown. Check affected API/proxy routes and absence of server secrets in browser artifacts. Retain relevant business regression coverage; format-string matching alone is insufficient acceptance evidence.

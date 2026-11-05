@@ -4,13 +4,15 @@ A fullstack engineering design skill for AI coding assistants, with reusable con
 
 ## Overview
 
-For a new project, provide business goals, core workflows, permissions, and actual constraints to start from a consistent engineering baseline. For existing projects, apply relevant conventions within the task's scope and let the structure grow with real responsibilities.
+For a new project, provide business goals, core workflows, permissions, and actual constraints to start from a consistent engineering baseline. Defaults fill only unspecified choices. For existing projects, preserve the stack, configuration/secret sources, API contracts, logging, and deployment conventions, applying engineering guidance within the requested scope.
 
 - Start a fullstack project and establish its default stack, module responsibilities, and structure.
 - Add pages, business modules, or APIs with clear frontend/backend calls and dependency directions.
 - Refine module boundaries or review whether layers carry real responsibilities.
 - Integrate middleware and maintain configuration, resource lifecycle, and logging.
 - Check current documentation and examples against implementation when business behavior changes.
+
+Implicit invocation covers design, implementation, refactoring, and engineering review. Questions that only explain the current scheduler, locate configuration, trace calls, or define a concept can be answered directly without this skill. Read-only architecture reviews still qualify. Explicit invocation keeps the requested scope: asking for an explanation does not authorize design or code changes.
 
 ## Quick Start
 
@@ -78,6 +80,8 @@ When Superpowers is installed, its applicable skills govern the current phase wh
 
 ## Core Conventions
 
+The concrete stack, file names, API prefix/envelopes, and logging format below are defaults for new projects without user-specified conventions. Existing projects extend their current mechanisms; a difference from these defaults is not itself a review finding or a reason to migrate.
+
 | Area | Convention |
 |---|---|
 | Default stack | React + TypeScript + Vite frontend; Python + FastAPI + Pydantic backend, using uv and uv.lock |
@@ -85,8 +89,8 @@ When Superpowers is installed, its applicable skills govern the current phase wh
 | Frontend ownership | Keep feature UI, state, helpers, and private styles with the feature; use CSS Modules in new projects and put actual cross-feature capabilities in shared |
 | API organization | Central API directory, split by business module, with paths, types, and named request functions; use a shared HTTP client and call named functions from pages |
 | Frontend/backend calls | Browsers use same-origin `/api/v1/...`; development proxy and production Nginx gateway configuration own backend target addresses |
-| Backend configuration | Each backend uses its application-root config.yaml as its only configuration source, validates it strictly, and restarts after edits; no environment variables or .env loading |
-| Middleware | Introduce for real business needs, with separate sections in the same config.yaml; each component has its own file for settings/resource classes, assembled and released by the entry point |
+| Backend configuration | New-project default: validated application-root config.yaml, loaded at startup without environment overrides; existing applications retain their configuration/secret sources and activation rules |
+| Middleware | Introduce for real business needs; bind settings and manage resources through the application's existing lifecycle, using config.yaml and component files for the default Python baseline |
 | Logging | Structured JSON to stdout with stable identifiers and request_id; the responsible boundary logs each failure, with sensitive data filtered |
 | Documentation consistency | Update affected current explanations and examples alongside behavior or convention changes, checking them against implementation and verification evidence |
 
@@ -110,6 +114,16 @@ Use the smallest sufficient structure. Simple features may use a few files and d
 [agents/openai.yaml](agents/openai.yaml) provides optional OpenAI-specific display metadata, a default prompt, and invocation policy. The engineering rules live in the shared files. See the [official metadata documentation](https://learn.chatgpt.com/docs/build-skills#optional-metadata) for the supported fields.
 
 Update the relevant rule files during maintenance and synchronize affected explanations in this README. Verify within the change's scope and keep project-specific business rules out of the general skill.
+
+## Evaluation
+
+Run the dependency-free package checks with:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+These checks validate local documentation links/anchors and evaluation fixture structure. They do not measure model behavior. [Evaluation instructions](evals/README.md) cover the 15 routing cases, six behavior cases, before/after comparison, and evidence levels. The [current review record](evals/review-2026-11-05.md) distinguishes observed baseline behavior, source inspection, and unrun model evaluations. Evaluation files and tests are maintenance tooling; normal skill use loads only `SKILL.md` and relevant references.
 
 ## License
 

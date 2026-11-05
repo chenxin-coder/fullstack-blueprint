@@ -1,8 +1,8 @@
 # Default Baseline for New Projects
 
-Start new projects with the engineering conventions below. The user supplies business goals, core workflows, permissions, and other actual constraints. Incorporate business design into the current Superpowers phase; do not ask again about settled engineering choices. For local changes, load only relevant conventions.
+Use these defaults for new applications only where the user has not specified a choice. User requirements for stack, configuration, API paths, or deployment take precedence. For existing applications, use their conventions and load the relevant concern reference rather than treating this baseline as a migration plan. Incorporate business design into the current Superpowers phase; do not ask again about settled choices.
 
-## Fixed Starting Point
+## Default Starting Point
 
 | Area | Convention |
 |---|---|

@@ -15,4 +15,4 @@ References reviewed: 2026-10-23. The following primary sources inform specific d
 
 ## Scope of Adoption
 
-Use the [default baseline](project-baseline.md) for new projects. Derive domain models, data ownership, service boundaries, and naming from the target project's requirements, contracts, and AGENTS.md. Use that project's check commands for verification.
+Use the [default baseline](project-baseline.md) for unspecified choices in new projects. The YAML-only and Python-specific choices in this table belong to that baseline; they do not require replacing existing configuration or frameworks. Derive domain models, data ownership, service boundaries, and naming from the target project's requirements, contracts, and AGENTS.md. Use that project's check commands for verification.

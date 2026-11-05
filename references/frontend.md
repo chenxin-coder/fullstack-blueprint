@@ -1,5 +1,7 @@
 # Frontend Design and Module Ownership
 
+Use the existing frontend framework, styling, API client organization, and deployment contract. The feature folders and central API directory below are defaults for new projects or gaps without established conventions; local UI work does not require moving existing endpoint definitions or adopting React.
+
 ## Start with the User Task
 
 Explain what the user accomplishes on the page, its primary action, and the next step. Prefer existing controls, routes, and visual tokens. Define feedback for loading, empty data, denied access, read failure, submission in progress, submission failure, and success; preserve user input and offer actionable recovery.

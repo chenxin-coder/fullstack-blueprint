@@ -1,7 +1,7 @@
 ---
 name: fullstack-blueprint
 license: MIT
-description: Use when starting a fullstack project, or building, changing, designing, or reviewing application architecture, frontend pages/components, backend APIs/business modules, middleware integration, module layering, frontend-to-backend calls, application logging, YAML configuration, or consistency between business documentation and implementation. Excludes unrelated prose or typo-only edits, pure algorithms, standalone scripts unrelated to these concerns, and non-software tasks.
+description: Use when starting, designing, implementing, refactoring, or reviewing fullstack applications or their frontend, backend, API, middleware, logging, or configuration, or checking application documentation against implementation. Excludes requests only to explain or locate existing code/configuration, trace current calls, or define concepts; also excludes prose-only edits and unrelated scripts or algorithms.
 ---
 
 # Fullstack Engineering Blueprint
@@ -10,14 +10,21 @@ Apply a fullstack engineering blueprint for design, implementation, and review: 
 
 Use the smallest sufficient structure to make responsibilities, dependencies, and failure handling explicit. Explicit user requirements take priority; otherwise, preserve project naming, public entry points, logging formats, and quality gates.
 
+## Invocation Boundary
+
+Select this skill implicitly for application design, implementation, refactoring, or engineering review. A request to explain the existing scheduler, locate configuration, trace current calls, or define a term is a current-state question; answer from the relevant evidence without loading this blueprint. Read-only reviews that evaluate architecture or engineering choices remain in scope. For a mixed request, apply the blueprint only to its design, review, or implementation part.
+
+An explicit invocation honors the user's requested scope. If the skill was explicitly requested or already loaded for a current-state question, give a concise evidence-based explanation; consult only a reference needed to answer it. Loading the skill does not authorize redesign or edits.
+
 ## Usage and Deliverables
 
-Identify whether the request is design, review, or implementation, and determine its scope from the request and confirmed context. Ask only when missing information prevents correct work. Read applicable AGENTS.md files, relevant current documentation, implementation, contracts, and tests; load references using the table below. Distinguish facts, constraints, and recommendations, and state assumptions where evidence is incomplete.
+Determine the requested deliverable from the current request and confirmed context. Ask only when missing information prevents correct work. Read applicable AGENTS.md files and the current documentation, implementation, contracts, and tests needed for that scope; load references using the table below. Distinguish facts, constraints, and recommendations, and state assumptions where evidence is incomplete.
 
 | Task | Work and output |
 |---|---|
+| Explanation after explicit invocation or prior loading | Answer the question from relevant evidence; preserve the current system and keep reference loading minimal |
 | Design | Explain choices, necessary module responsibilities and dependencies, behavior contracts, and acceptance criteria; implement business code only as requested by the user |
-| Review | Rank findings by impact and provide locations/evidence, consequences, and minimal recommendations; distinguish violations, optional improvements, and unverified concerns, and report honestly when there are no findings; do not edit files |
+| Review | Rank findings by impact and provide locations/evidence, consequences, and minimal recommendations; distinguish violations, optional improvements, and unverified concerns. A review-only request leaves files unchanged; a request to review and fix includes authorized implementation |
 | Implementation | Complete authorized changes and check the affected responsibilities, dependencies, contracts, and failure handling; report actual changes, necessary tradeoffs, documentation updates or reasons none are needed, verification performed, and unverified areas |
 
 Use the user's requested language, or the language of their request when unspecified. Follow established project language conventions for maintained documents, and preserve exact identifiers. A few sentences suffice for a local task; do not impose a full set of headings. Label relationships as runtime calls or source dependencies and show only relevant parts. Design and review do not by themselves authorize scaffolding, dependency installation, or code commits.
@@ -25,7 +32,8 @@ Use the user's requested language, or the language of their request when unspeci
 ## Core Constraints
 
 - Apply these conventions within the task's scope. Organize code by business ownership; add layers and directories for actual responsibilities. A few files, simple functions, and direct dependencies are valid. Share and abstract for real reuse or variation needs; select architecture patterns under their stated conditions.
-- Frontend requests use same-origin `/api/v1/...`, forwarded by the development proxy and production gateway. Each backend loads and validates its application-root `config.yaml`; do not use environment variables, .env files, or override chains.
+- For an existing project, follow its documented and implemented stack, module layout, configuration and secret sources, API paths and envelopes, logging fields, and deployment lifecycle. If documentation and implementation disagree, report the conflict and resolve only what the task requires. A different convention alone is not a defect or a migration request. Fill gaps with choices compatible with that project.
+- For a new project without a user-specified convention, use the [default baseline](references/project-baseline.md). Its Python file layout, YAML-only configuration, same-origin `/api/v1/...` paths, and logging/error defaults are starting choices, not retrofit requirements. Explicit user requirements override defaults in new projects too.
 - When Superpowers is available, its applicable skills govern the current phase; this skill supplies relevant engineering constraints. Reuse design, plan, confirmation, and verification records, keeping code, documentation, and acceptance in the same task. Avoid duplicate workflows or confirmations, honor outstanding requirements, and do not force the entire pipeline. Without Superpowers, follow this skill without requiring another installation. Diagnose failures first, write tests before business behavior changes, and base completion claims on actual verification.
 
 ## Documentation and Business Logic Consistency
@@ -39,6 +47,7 @@ Use the user's requested language, or the language of their request when unspeci
 
 | Concern | Read |
 |---|---|
+| Explanation after explicit invocation or prior loading | Relevant project evidence first; a reference only for an unresolved engineering question |
 | New project or project initialization | [project-baseline.md](references/project-baseline.md), then [architecture responsibilities](references/architecture.md) as required by the business |
 | New module responsibilities/interfaces/dependencies, boundary refactoring, or layering review | [architecture.md](references/architecture.md) |
 | Frontend pages, components, state, or styles | [frontend.md](references/frontend.md) |

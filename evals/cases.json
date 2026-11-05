@@ -1,0 +1,57 @@
+{
+  "routing_cases": [
+    {"id": "R01", "prompt": "参照当前项目的结构，广告数据也是根据定时任务配置，定时获取吗？", "invoke": false, "reason": "Explain the current scheduling mechanism; no design or change requested."},
+    {"id": "R02", "prompt": "Where is the database configuration loaded in this backend?", "invoke": false, "reason": "Locate and explain existing code."},
+    {"id": "R03", "prompt": "这个 cron 表达式是什么意思？", "invoke": false, "reason": "Explain a configuration value."},
+    {"id": "R04", "prompt": "Trace the call chain from this controller to its mapper.", "invoke": false, "reason": "Describe current runtime calls, without evaluating or changing boundaries."},
+    {"id": "R05", "prompt": "Change the README title from Store to Shop.", "invoke": false, "reason": "Prose-only edit."},
+    {"id": "R06", "prompt": "Implement a standalone CSV sorting script.", "invoke": false, "reason": "Standalone script unrelated to application engineering."},
+    {"id": "R07", "prompt": "设计三个广告平台的数据接入方案，明确调度、模块边界和配置方式。", "invoke": true, "reason": "Application integration design."},
+    {"id": "R08", "prompt": "Add an order query page and backend API to this project.", "invoke": true, "reason": "Application feature implementation."},
+    {"id": "R09", "prompt": "Review whether these backend module boundaries and dependency directions are appropriate.", "invoke": true, "reason": "Engineering review, even though it is read-only."},
+    {"id": "R10", "prompt": "把广告报表采集接入现有 XXL-JOB，支持定时同步和手动补数。", "invoke": true, "reason": "Backend scheduling integration implementation."},
+    {"id": "R11", "prompt": "Use $fullstack-blueprint to explain how the current scheduling works. Do not redesign it.", "invoke": true, "reason": "Explicit invocation; answer remains an explanation with minimal reference loading."},
+    {"id": "R12", "prompt": "先解释现有采集链路，再设计广告数据的接入模块；暂不实现。", "invoke": true, "reason": "Mixed request includes design, but no implementation authorization."},
+    {"id": "R13", "prompt": "Start a new fullstack inventory application. I have no stack preference.", "invoke": true, "reason": "New application baseline."},
+    {"id": "R14", "prompt": "$fullstack-blueprint: what is an attribution window?", "invoke": true, "reason": "Explicit invocation; the unrelated domain question still receives a direct answer, not engineering work."},
+    {"id": "R15", "prompt": "Check whether the current deployment guide and configuration examples match the application implementation.", "invoke": true, "reason": "Engineering documentation consistency review, not a prose-only edit."}
+  ],
+  "behavior_cases": [
+    {
+      "id": "B01",
+      "context": "Existing Java 17/Spring Boot application. Profiles use application.yml and application-prod.yaml. Collection uses Forest clients, services, MyBatis mappers, and XXL-JOB handlers.",
+      "prompt": "Design an advertising report collector that follows this project. Do not implement it yet.",
+      "checks": ["Preserves Java/Spring, profile configuration, and the existing scheduler.", "Explains affected responsibilities and failure handling using the existing structure.", "Does not prescribe a Python migration, config.yaml migration, dependency installation, or code edits."]
+    },
+    {
+      "id": "B02",
+      "context": "Existing Node backend uses environment variables with startup schema validation and a secret manager. The frontend uses /api/v2 and an established {data, meta} success envelope. Logs use trace_id.",
+      "prompt": "Implement an order lookup endpoint and connect it to the existing page.",
+      "checks": ["Preserves the config and secret sources, API prefix, response envelope, and trace_id contract.", "Uses the project's client, framework, and module layout.", "Verifies the new lookup and affected contract without migrating unrelated conventions."]
+    },
+    {
+      "id": "B03",
+      "context": "Empty application workspace, no repository conventions, no stack or deployment requirements supplied.",
+      "prompt": "Design a small equipment borrowing application with request, approval, and return workflows. Do not write code.",
+      "checks": ["Uses the React/TypeScript/Vite and Python/FastAPI/Pydantic baseline.", "Keeps one modular backend and introduces infrastructure only for an actual need.", "Uses the default YAML, same-origin API, logging, and error contracts in the proposal.", "Produces a design without scaffolding or demanding another approval to discuss it."]
+    },
+    {
+      "id": "B04",
+      "context": "Existing Vue page with local styles, shared visual tokens, and an established API client.",
+      "prompt": "Fix the spacing and empty state on the order list page.",
+      "checks": ["Loads only frontend guidance needed for the change.", "Preserves Vue, current styling, and the existing API client.", "Does not load architecture, backend configuration, or new-project guidance without a concrete dependency."]
+    },
+    {
+      "id": "B05",
+      "context": "An application implementation plan was already approved. Superpowers design and verification records exist. The user has requested implementation and commit/push.",
+      "prompt": "Continue the approved implementation, fix any verified issues, and commit and push the result.",
+      "checks": ["Reuses the existing plan and approvals.", "Implements and verifies the authorized scope without restarting brainstorming or adding a second confirmation gate.", "Commits and pushes only the authorized changes after verification, reporting any actual blocker."]
+    },
+    {
+      "id": "B06",
+      "context": "New project. The user explicitly requires Vue, Spring Boot, deployment-managed environment variables, and /services/v3 endpoints.",
+      "prompt": "Use fullstack-blueprint to design the application with these requirements.",
+      "checks": ["Uses the user's stack, configuration sources, and API prefix instead of the default baseline.", "Still applies responsibility ownership, input validation, secret handling, and resource cleanup.", "Does not treat a new project as permission to override explicit requirements."]
+    }
+  ]
+}
