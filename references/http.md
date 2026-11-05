@@ -1,6 +1,6 @@
 # Frontend-Backend Calls and Contracts
 
-For existing applications, preserve the established API client location, path prefix, response/error envelopes, authentication, correlation fields, and proxy/gateway or cross-origin deployment contract. Keep generated clients authoritative when present. The `/api/v1` paths, central `src/api` layout, same-origin proxy, and response shapes below are defaults for new applications without specified conventions; they do not require a contract migration.
+Use this API standard for new projects and their later features. Keep paths and types easy to find, transport mechanics shared, and user feedback owned by the page or feature.
 
 ## Call Chain and Responsibilities
 
@@ -34,7 +34,7 @@ When adding or changing an API, follow the existing contract and specify:
 
 With existing OpenAPI/code generation, change the authoritative schema first and regenerate frontend artifacts with existing commands; do not hand-edit generated code. Small projects without generation may maintain clear types and contract tests; introduce generation as API size or drift costs warrant it. Static types do not replace server input validation. Validate unreliable external responses at runtime at an appropriate boundary.
 
-Preserve existing success and error envelopes. For the new-project baseline, return the DTO directly on success and use `code/message/request_id` for errors, with HTTP status matching the semantics. Optional `details` hold safe field-validation information only. Do not expose stack traces, SQL, or internal addresses to browsers.
+Return the DTO directly on success and use `code/message/request_id` for errors, with HTTP status matching the semantics. Optional `details` hold safe field-validation information only. Do not expose stack traces, SQL, or internal addresses to browsers.
 
 ## Timeouts and Retries
 
@@ -55,7 +55,7 @@ Disabling the frontend submit button improves usability; the server guarantees c
 
 **When using idempotency keys:** Reuse one key for the same business intent and its retries. The backend binds the key to the actor/operation scope, a normalized request digest, and a durable result. The same key with different content conflicts; the same key and content returns the original result or an explicit processing state. Atomically associate the record with business writes and define retention. For external side effects, also define external idempotency or outcome reconciliation; single-process in-memory deduplication does not guarantee correctness across processes.
 
-Follow the API contract's authentication mechanism. For cookies, check CSRF and credential policies. With same-origin deployment, route browser requests through that entry point. For an existing cross-origin contract, preserve its explicit origin allowlist and credential policy; do not broaden CORS or permissions to make integration work.
+Follow the API contract's authentication mechanism. For cookies, check CSRF and credential policies. Route browser requests through the same-origin entry point; do not broaden CORS or permissions to make integration work.
 
 ## Creation Example Requiring Result Replay
 

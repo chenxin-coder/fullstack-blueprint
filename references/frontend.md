@@ -1,6 +1,6 @@
 # Frontend Design and Module Ownership
 
-Use the existing frontend framework, styling, API client organization, and deployment contract. The feature folders and central API directory below are defaults for new projects or gaps without established conventions; local UI work does not require moving existing endpoint definitions or adopting React.
+Use these React feature, API and style conventions as the project grows. Read the [project baseline](project-baseline.md) for initial setup; a local page change stays within its actual responsibilities.
 
 ## Start with the User Task
 
@@ -33,6 +33,6 @@ In a small project, a page may call named API request functions directly; a hook
 
 ## Styles and Verification
 
-Follow the project's CSS Modules, styling system, or utility-class conventions. Keep page styles local and cross-page tokens centralized, avoiding accumulated global overrides.
+Use CSS Modules for private feature styles and keep cross-page visual tokens centralized. Reuse those conventions for later pages, avoiding accumulated global overrides.
 
 Verify new interactions through user behavior: loading/failure/success, repeated clicks, and relevant permission or identity changes. Use integration or end-to-end checks where a workflow crosses APIs; passing type checks does not verify interaction behavior. Reuse architecture tests or lint rules when changing boundary constraints rather than creating a duplicate rule system.

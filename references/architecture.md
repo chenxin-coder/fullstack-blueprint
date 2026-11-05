@@ -1,6 +1,6 @@
 # Architecture Design and Layering Choices
 
-Use this reference for new application frameworks or business modules, boundary refactoring, and layering reviews. Preserve the chosen structure for local changes; reconsider only affected responsibilities, collaboration, or dependency directions that actually change. Incorporate conclusions into the current Superpowers design/plan instead of creating another workflow or document set.
+Use this reference when a new project or later feature needs a module-boundary decision, complex rules, or transaction coordination. Default to a few files with API, business and data-access responsibilities. The assistant handles pattern choices; explain only the choices that affect the user's feature. Incorporate necessary conclusions into the current design/plan. Local UI or field edits do not require this reference.
 
 ## Derive Responsibilities from Business Needs and Constraints
 

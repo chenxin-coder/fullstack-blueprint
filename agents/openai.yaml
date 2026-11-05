@@ -1,6 +1,6 @@
 interface:
-  display_name: "Fullstack Engineering Blueprint"
-  short_description: "Scoped application design, implementation, and review"
-  default_prompt: "Use $fullstack-blueprint within the requested scope: preserve existing project conventions, use baseline defaults only for unspecified new-project choices, load relevant references, and provide evidence appropriate to the requested design, implementation, review, or explanation."
+  display_name: "Fullstack Project Blueprint"
+  short_description: "React/Python project foundations for beginners"
+  default_prompt: "Use $fullstack-blueprint to turn my business idea into a small React/Python project with clear modules, configuration, logging, a working feature, and verified first-run instructions."
 policy:
   allow_implicit_invocation: true

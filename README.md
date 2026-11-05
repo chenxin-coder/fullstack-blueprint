@@ -1,18 +1,20 @@
-# fullstack-blueprint · Fullstack Engineering Blueprint
+# fullstack-blueprint · Fullstack Project Blueprint
 
-A fullstack engineering design skill for AI coding assistants, with reusable conventions for frontend/backend design, module layering, API calls, configuration, logging, and documentation maintenance.
+A skill for AI coding assistants that helps beginners turn business ideas into small, runnable React/Python projects. It packages practical standards for frontend/backend design, module ownership, API calls, configuration, logging, and documentation.
 
 ## Overview
 
-For a new project, provide business goals, core workflows, permissions, and actual constraints to start from a consistent engineering baseline. Defaults fill only unspecified choices. For existing projects, preserve the stack, configuration/secret sources, API contracts, logging, and deployment conventions, applying engineering guidance within the requested scope.
+Describe what the application should do, who uses it, and its main workflow. The assistant recommends the technical foundation, creates only necessary structure when building is requested, and provides a working feature with first-run instructions. Users do not need to select architecture patterns.
 
-- Start a fullstack project and establish its default stack, module responsibilities, and structure.
-- Add pages, business modules, or APIs with clear frontend/backend calls and dependency directions.
-- Refine module boundaries or review whether layers carry real responsibilities.
-- Integrate middleware and maintain configuration, resource lifecycle, and logging.
-- Check current documentation and examples against implementation when business behavior changes.
+The main path is **business goal → recommended foundation → minimal structure → real feature → verified startup and handoff**. Start with one frontend and one modular backend, then extend them with the same standards as requirements grow.
 
-Implicit invocation covers design, implementation, refactoring, and engineering review. Questions that only explain the current scheduler, locate configuration, trace calls, or define a concept can be answered directly without this skill. Read-only architecture reviews still qualify. Explicit invocation keeps the requested scope: asking for an explanation does not authorize design or code changes.
+- New projects use React + TypeScript + Vite and Python + FastAPI + Pydantic, with npm and uv lockfiles.
+- Each feature keeps its UI, state, helpers and private styles together; API definitions and shared transport stay easy to find.
+- Backend YAML settings, logging and resource lifecycle are established before business behavior.
+- The handoff includes prerequisites, copyable commands, the browser address, one concrete user operation and actual verification results.
+- Later features keep current documentation, configuration examples and behavior consistent.
+
+Implicit invocation covers new-project design/build and continued work in projects already using this blueprint. Unrelated existing-project refactoring and current-code explanations are outside that automatic scope. Explicit invocation respects the requested task. Explicit user requirements take precedence over defaults; existing files and agreed contracts are not silently replaced.
 
 ## Quick Start
 
@@ -65,33 +67,34 @@ Marketplace publication follows the separate [WorkBuddy Open Platform requiremen
 Ask your coding assistant to apply `fullstack-blueprint` to the task, for example:
 
 ```text
-Use fullstack-blueprint to design an equipment borrowing system with request, approval, and return workflows.
+Use fullstack-blueprint to design a small equipment borrowing app with request, approval, and return. Explain the recommended structure; do not implement it yet.
 ```
 
 ```text
-Use fullstack-blueprint to add an order query page and API to the current project, following existing module boundaries and updating affected documentation.
+Use fullstack-blueprint to build a small personal notes app. I need to add and list notes, keep them after restart, and follow the README to run it locally.
 ```
 
 ```text
-Use fullstack-blueprint to review the project's frontend/backend layering, API calls, configuration, and logging. Report only findings supported by evidence.
+This project was built with fullstack-blueprint. Add a search filter to the notes page and API, and update the affected tests and documentation.
 ```
 
 When Superpowers is installed, its applicable skills govern the current phase while this skill supplies engineering constraints and reuses existing design, plan, confirmation, and verification records. The skill also works independently without Superpowers.
 
 ## Core Conventions
 
-The concrete stack, file names, API prefix/envelopes, and logging format below are defaults for new projects without user-specified conventions. Existing projects extend their current mechanisms; a difference from these defaults is not itself a review finding or a reason to migrate.
+These are the recommended starting standards. The assistant applies them to the actual business need and explains necessary choices in plain language. Explicit user requirements take precedence.
 
 | Area | Convention |
 |---|---|
-| Default stack | React + TypeScript + Vite frontend; Python + FastAPI + Pydantic backend, using uv and uv.lock |
+| Default stack | React + TypeScript + Vite with npm/package-lock.json; Python + FastAPI + Pydantic with uv/uv.lock |
 | Module layering | Organize by business capability and separate API, business, and data-access responsibilities as needed; start with one frontend and one modular backend |
 | Frontend ownership | Keep feature UI, state, helpers, and private styles with the feature; use CSS Modules in new projects and put actual cross-feature capabilities in shared |
 | API organization | Central API directory, split by business module, with paths, types, and named request functions; use a shared HTTP client and call named functions from pages |
 | Frontend/backend calls | Browsers use same-origin `/api/v1/...`; development proxy and production Nginx gateway configuration own backend target addresses |
-| Backend configuration | New-project default: validated application-root config.yaml, loaded at startup without environment overrides; existing applications retain their configuration/secret sources and activation rules |
-| Middleware | Introduce for real business needs; bind settings and manage resources through the application's existing lifecycle, using config.yaml and component files for the default Python baseline |
+| Backend configuration | Validated application-root config.yaml, loaded at startup; edits take effect on restart, without environment overrides or .env loading |
+| Middleware | Introduce for real business needs; use separate sections in config.yaml and one settings/resource file per component, assembled and released by the application lifecycle |
 | Logging | Structured JSON to stdout with stable identifiers and request_id; the responsible boundary logs each failure, with sensitive data filtered |
+| First-run handoff | Document tools, exact setup/start/check commands, browser address, expected feature result and safe recovery from common setup errors |
 | Documentation consistency | Update affected current explanations and examples alongside behavior or convention changes, checking them against implementation and verification evidence |
 
 Use the smallest sufficient structure. Simple features may use a few files and direct function calls; add abstraction, sharing, and independent services for actual needs. The complete rules live in [SKILL.md](SKILL.md) and its references.
@@ -100,9 +103,9 @@ Use the smallest sufficient structure. Simple features may use a few files and d
 
 | File | Content |
 |---|---|
-| [SKILL.md](SKILL.md) | Scope, task deliverables, core constraints, and documentation consistency |
+| [SKILL.md](SKILL.md) | Project scope, beginner workflow, engineering rules, and documentation consistency |
 | [agents/openai.yaml](agents/openai.yaml) | Optional OpenAI-specific display metadata, default prompt, and invocation policy |
-| [references/project-baseline.md](references/project-baseline.md) | Default stack and minimal structure for new projects |
+| [references/project-baseline.md](references/project-baseline.md) | Default stack, minimal structure, and first-run acceptance criteria |
 | [references/architecture.md](references/architecture.md) | Business responsibilities, module interfaces, layering choices, and dependency directions |
 | [references/frontend.md](references/frontend.md) | Feature modules, state, shared capabilities, and style ownership |
 | [references/backend.md](references/backend.md) | Backend responsibilities, transactions, module collaboration, and middleware integration |
@@ -123,7 +126,7 @@ Run the dependency-free package checks with:
 python3 -m unittest discover -s tests -v
 ```
 
-These checks validate local documentation links/anchors and evaluation fixture structure. They do not measure model behavior. [Evaluation instructions](evals/README.md) cover the 15 routing cases, six behavior cases, before/after comparison, and evidence levels. The [current review record](evals/review-2026-11-05.md) distinguishes observed baseline behavior, source inspection, and unrun model evaluations. Evaluation files and tests are maintenance tooling; normal skill use loads only `SKILL.md` and relevant references.
+These checks validate local documentation links/anchors and evaluation fixture structure, including allowed workspace changes. They do not measure model behavior. The [evaluation instructions](evals/README.md) cover 15 routing cases and six behavior cases focused on new-project design, runnable setup, incremental features, YAML, middleware and continued implementation. The [current review record](evals/review-2026-11-05-new-project-focus.md) records this scope and its actual verification. Evaluation files are maintenance tooling; normal skill use loads only `SKILL.md` and relevant references.
 
 ## License
 

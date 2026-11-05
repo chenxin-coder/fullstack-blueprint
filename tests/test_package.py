@@ -67,6 +67,9 @@ class PackageTests(unittest.TestCase):
                         self.assertIsInstance(case["reason"], str)
                         self.assertTrue(case["reason"].strip())
                     else:
+                        self.assertIn(case["workspace_policy"], {
+                            "read_only", "design_documents_only", "implementation",
+                        })
                         self.assertIsInstance(case["context"], str)
                         self.assertTrue(case["context"].strip())
                         self.assertIsInstance(case["checks"], list)

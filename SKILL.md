@@ -1,59 +1,54 @@
 ---
 name: fullstack-blueprint
 license: MIT
-description: Use when starting, designing, implementing, refactoring, or reviewing fullstack applications or their frontend, backend, API, middleware, logging, or configuration, or checking application documentation against implementation. Excludes requests only to explain or locate existing code/configuration, trace current calls, or define concepts; also excludes prose-only edits and unrelated scripts or algorithms.
+description: Use when starting, designing, or building a new fullstack project, or adding features or checking engineering conventions in a project already using this blueprint. Provides a recommended React/Python starting standard for beginners. Excludes unrelated existing-project refactoring or framework adaptation, current-code explanations, prose-only edits, and standalone scripts or algorithms. Explicit invocation keeps the user's requested scope.
 ---
 
-# Fullstack Engineering Blueprint
+# Fullstack Project Blueprint
 
-Apply a fullstack engineering blueprint for design, implementation, and review: defaults for new projects, module responsibilities, dependency directions, and engineering conventions.
+Help a beginner turn a business idea into a small, runnable fullstack project using reusable engineering experience. Use one recommended React/Python baseline; let real business responsibilities determine how much structure is needed. The user supplies business intent; the assistant handles technical choices and explains their practical effect.
 
-Use the smallest sufficient structure to make responsibilities, dependencies, and failure handling explicit. Explicit user requirements take priority; otherwise, preserve project naming, public entry points, logging formats, and quality gates.
+## Scope and Working Context
 
-## Invocation Boundary
+Apply this skill to new projects and continued work in projects already built with this blueprint. Confirm that relationship from the request or target-project evidence. An unrelated existing repository is not an implicit trigger. Explicit invocation for an explanation or review stays within that request and does not authorize migration or implementation.
 
-Select this skill implicitly for application design, implementation, refactoring, or engineering review. A request to explain the existing scheduler, locate configuration, trace current calls, or define a term is a current-state question; answer from the relevant evidence without loading this blueprint. Read-only reviews that evaluate architecture or engineering choices remain in scope. For a mixed request, apply the blueprint only to its design, review, or implementation part.
+Read instructions and evidence for the target directory only. When creating a separate project, do not carry over another project's naming, tables, runtime versions, or check commands. Explicit user requirements take precedence over defaults; raise conflicts that prevent correct work rather than silently overwriting files or changing agreed contracts.
 
-An explicit invocation honors the user's requested scope. If the skill was explicitly requested or already loaded for a current-state question, give a concise evidence-based explanation; consult only a reference needed to answer it. Loading the skill does not authorize redesign or edits.
+## From Idea to a Working Feature
 
-## Usage and Deliverables
+Use the stages relevant to the requested deliverable. Design ends with a proposal and future acceptance criteria; review checks evidence without implementing.
 
-Determine the requested deliverable from the current request and confirmed context. Ask only when missing information prevents correct work. Read applicable AGENTS.md files and the current documentation, implementation, contracts, and tests needed for that scope; load references using the table below. Distinguish facts, constraints, and recommendations, and state assumptions where evidence is incomplete.
+1. **Understand the business:** Establish who uses the application, the main operation, necessary permissions, and what successful completion means. Ask only blocking questions; label other assumptions. Do not require a beginner to choose architecture patterns or middleware.
+2. **Recommend the foundation:** Use [project-baseline.md](references/project-baseline.md). Explain the relevant modules and frontend/backend calls in plain language. Start with one frontend and one modular backend; advanced patterns are considered only for demonstrated needs.
+3. **Build the minimum structure:** When implementation is requested, establish configuration validation, logging, and resource lifecycle, then add only files needed for the first feature. A design-only request delivers a proposal, optionally in a design document; it does not authorize application scaffolding, dependencies, or business code. A review-only request leaves files unchanged.
+4. **Connect a real feature:** During implementation, connect one user operation through the page, named API function, backend business operation, and required persistence. Write tests before business behavior changes; verify success, rejection, and relevant failures. Health endpoints and static mock pages alone do not complete a requested working application.
+5. **Make it usable:** For an implementation handoff, follow the [first-run acceptance criteria](references/project-baseline.md#first-run-acceptance). Provide prerequisites, copyable setup/start/check commands, the browser address, a concrete operation with its expected result, and verified results or actual blockers. When adding later features, check only affected behavior and update the same project instructions.
 
-| Task | Work and output |
-|---|---|
-| Explanation after explicit invocation or prior loading | Answer the question from relevant evidence; preserve the current system and keep reference loading minimal |
-| Design | Explain choices, necessary module responsibilities and dependencies, behavior contracts, and acceptance criteria; implement business code only as requested by the user |
-| Review | Rank findings by impact and provide locations/evidence, consequences, and minimal recommendations; distinguish violations, optional improvements, and unverified concerns. A review-only request leaves files unchanged; a request to review and fix includes authorized implementation |
-| Implementation | Complete authorized changes and check the affected responsibilities, dependencies, contracts, and failure handling; report actual changes, necessary tradeoffs, documentation updates or reasons none are needed, verification performed, and unverified areas |
+Scale output to the task: a short design for a small idea, focused changes for one feature, and evidence-backed findings for a review. Keep necessary engineering reasoning available without presenting a catalogue of patterns or a long questionnaire to the user. Use the user's requested language, or the request's language when unspecified; follow maintained-document conventions and preserve exact identifiers.
 
-Use the user's requested language, or the language of their request when unspecified. Follow established project language conventions for maintained documents, and preserve exact identifiers. A few sentences suffice for a local task; do not impose a full set of headings. Label relationships as runtime calls or source dependencies and show only relevant parts. Design and review do not by themselves authorize scaffolding, dependency installation, or code commits.
+## Engineering Rules
 
-## Core Constraints
+- Organize by business capability. Keep feature UI, state, helpers and private styles together; share only actual cross-feature capabilities. Give each layer a real responsibility; simple functions and concrete dependencies are valid.
+- Use the baseline's central API directory and shared client, same-origin `/api/v1/...`, strict backend inputs, YAML configuration, logging, and explicit resource lifecycle. Read the relevant reference before changing that concern. Add persistence and middleware only for a business need, and explain the choice.
+- Keep permissions, state rules, transaction ownership, failure handling and frontend feedback consistent across a feature. Describe runtime calls separately from source imports when explaining a boundary. Use the [architecture reference](references/architecture.md) for boundary decisions or actual complexity, rather than for every local edit.
+- When Superpowers is available, its applicable skills govern the current phase; this skill supplies the project standards. Reuse settled business decisions, approved plans and verification records, honor outstanding gates, and avoid duplicate workflows or confirmations. Without Superpowers, this skill works independently. Diagnose failures before fixing them and base completion claims on actual checks.
 
-- Apply these conventions within the task's scope. Organize code by business ownership; add layers and directories for actual responsibilities. A few files, simple functions, and direct dependencies are valid. Share and abstract for real reuse or variation needs; select architecture patterns under their stated conditions.
-- For an existing project, follow its documented and implemented stack, module layout, configuration and secret sources, API paths and envelopes, logging fields, and deployment lifecycle. If documentation and implementation disagree, report the conflict and resolve only what the task requires. A different convention alone is not a defect or a migration request. Fill gaps with choices compatible with that project.
-- For a new project without a user-specified convention, use the [default baseline](references/project-baseline.md). Its Python file layout, YAML-only configuration, same-origin `/api/v1/...` paths, and logging/error defaults are starting choices, not retrofit requirements. Explicit user requirements override defaults in new projects too.
-- When Superpowers is available, its applicable skills govern the current phase; this skill supplies relevant engineering constraints. Reuse design, plan, confirmation, and verification records, keeping code, documentation, and acceptance in the same task. Avoid duplicate workflows or confirmations, honor outstanding requirements, and do not force the entire pipeline. Without Superpowers, follow this skill without requiring another installation. Diagnose failures first, write tests before business behavior changes, and base completion claims on actual verification.
+## Documentation and Implementation Stay Together
 
-## Documentation and Business Logic Consistency
+Locate affected README sections, design/API explanations, configuration examples and comments. Resolve discrepancies using confirmed requirements, contracts, implementation and tests; neither old documentation nor passing tests alone establishes correctness. Update current explanations in the same change when behavior, boundaries, interfaces, permissions, errors, configuration, logging or startup changes. For an internal-only change, explain why current instructions remain accurate.
 
-- Locate affected README sections, architecture/feature/API documentation, configuration/run examples, and code comments. Use confirmed requirements, rules, contracts, implementation, and tests to decide which side needs correction; old documentation or passing tests alone do not establish correctness.
-- When behavior, responsibilities, calls, interfaces, permissions, state, errors, logging, configuration, or operation changes, update current explanations and examples in the same change. Add minimal documentation near the relevant material when needed. For internal changes that leave documented contracts intact, explain why no update is required.
-- Mark plans as unimplemented. Preserve historical facts in past designs, reviews, and replay records, adding current guidance when needed.
-- Check “change → implementation/test evidence → current documentation location” for fields, examples, boundaries, and run commands, and verify executable examples where appropriate. Do not report completion while affected material remains contradictory; state the actual review scope and unverified items.
+Mark proposed designs as unimplemented and preserve historical facts when adding current guidance. Check each change against implementation/test evidence and the current documentation location, including executable examples where appropriate. Report real verification limits; do not call a feature complete while its current instructions contradict it. Commits and external publication require authorization from the task.
 
 ## References on Demand
 
 | Concern | Read |
 |---|---|
-| Explanation after explicit invocation or prior loading | Relevant project evidence first; a reference only for an unresolved engineering question |
-| New project or project initialization | [project-baseline.md](references/project-baseline.md), then [architecture responsibilities](references/architecture.md) as required by the business |
-| New module responsibilities/interfaces/dependencies, boundary refactoring, or layering review | [architecture.md](references/architecture.md) |
-| Frontend pages, components, state, or styles | [frontend.md](references/frontend.md) |
-| Backend modules, business rules, data access, transactions, or middleware integration | [backend.md](references/backend.md) |
-| API additions/changes/review, integration, request failures, or duplicate submissions | [http.md](references/http.md) |
-| Logging or exception recording | [logging-config.md: Logging Lifecycle](references/logging-config.md#logging-lifecycle) |
-| Backend YAML configuration, middleware/proxy configuration, or application initialization | [logging-config.md: Configuration Lifecycle](references/logging-config.md#configuration-lifecycle) |
+| New-project starting point and first-run handoff | [project-baseline.md](references/project-baseline.md) |
+| Module ownership, dependency boundaries, or complex rules/transactions | [architecture.md](references/architecture.md) |
+| Pages, components, state, or styles | [frontend.md](references/frontend.md) |
+| Python business modules, data access, transactions, or middleware | [backend.md](references/backend.md) |
+| API definitions, integration, failures, or repeated submissions | [http.md](references/http.md) |
+| Logs and exception recording | [logging-config.md: Logging Lifecycle](references/logging-config.md#logging-lifecycle) |
+| YAML settings, startup, or proxy configuration | [logging-config.md: Configuration Lifecycle](references/logging-config.md#configuration-lifecycle) |
 
-Read only relevant sections, choose verification by impact, and follow project checks. Local field, style, or log changes do not automatically require the architecture reference. Read [sources.md](references/sources.md) only when consulting the sources of these conventions.
+Read only sections needed for the task. A local style or field change does not require the whole architecture or startup guide. Read [sources.md](references/sources.md) only for provenance.

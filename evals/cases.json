@@ -1,57 +1,165 @@
 {
   "routing_cases": [
-    {"id": "R01", "prompt": "参照当前项目的结构，广告数据也是根据定时任务配置，定时获取吗？", "invoke": false, "reason": "Explain the current scheduling mechanism; no design or change requested."},
-    {"id": "R02", "prompt": "Where is the database configuration loaded in this backend?", "invoke": false, "reason": "Locate and explain existing code."},
-    {"id": "R03", "prompt": "这个 cron 表达式是什么意思？", "invoke": false, "reason": "Explain a configuration value."},
-    {"id": "R04", "prompt": "Trace the call chain from this controller to its mapper.", "invoke": false, "reason": "Describe current runtime calls, without evaluating or changing boundaries."},
-    {"id": "R05", "prompt": "Change the README title from Store to Shop.", "invoke": false, "reason": "Prose-only edit."},
-    {"id": "R06", "prompt": "Implement a standalone CSV sorting script.", "invoke": false, "reason": "Standalone script unrelated to application engineering."},
-    {"id": "R07", "prompt": "设计三个广告平台的数据接入方案，明确调度、模块边界和配置方式。", "invoke": true, "reason": "Application integration design."},
-    {"id": "R08", "prompt": "Add an order query page and backend API to this project.", "invoke": true, "reason": "Application feature implementation."},
-    {"id": "R09", "prompt": "Review whether these backend module boundaries and dependency directions are appropriate.", "invoke": true, "reason": "Engineering review, even though it is read-only."},
-    {"id": "R10", "prompt": "把广告报表采集接入现有 XXL-JOB，支持定时同步和手动补数。", "invoke": true, "reason": "Backend scheduling integration implementation."},
-    {"id": "R11", "prompt": "Use $fullstack-blueprint to explain how the current scheduling works. Do not redesign it.", "invoke": true, "reason": "Explicit invocation; answer remains an explanation with minimal reference loading."},
-    {"id": "R12", "prompt": "先解释现有采集链路，再设计广告数据的接入模块；暂不实现。", "invoke": true, "reason": "Mixed request includes design, but no implementation authorization."},
-    {"id": "R13", "prompt": "Start a new fullstack inventory application. I have no stack preference.", "invoke": true, "reason": "New application baseline."},
-    {"id": "R14", "prompt": "$fullstack-blueprint: what is an attribution window?", "invoke": true, "reason": "Explicit invocation; the unrelated domain question still receives a direct answer, not engineering work."},
-    {"id": "R15", "prompt": "Check whether the current deployment guide and configuration examples match the application implementation.", "invoke": true, "reason": "Engineering documentation consistency review, not a prose-only edit."}
+    {
+      "id": "R01",
+      "prompt": "参照当前项目的结构，广告数据也是根据定时任务配置，定时获取吗？",
+      "invoke": false,
+      "reason": "Current-state explanation only."
+    },
+    {
+      "id": "R02",
+      "prompt": "Where is the database configuration loaded in this backend?",
+      "invoke": false,
+      "reason": "Code/configuration location only."
+    },
+    {
+      "id": "R03",
+      "prompt": "这个 cron 表达式是什么意思？",
+      "invoke": false,
+      "reason": "Concept explanation only."
+    },
+    {
+      "id": "R04",
+      "prompt": "Trace the call chain from this controller to its mapper.",
+      "invoke": false,
+      "reason": "Current call tracing without building or checking a blueprint project."
+    },
+    {
+      "id": "R05",
+      "prompt": "Change the README title from Store to Shop.",
+      "invoke": false,
+      "reason": "Prose-only edit."
+    },
+    {
+      "id": "R06",
+      "prompt": "Implement a standalone CSV sorting script.",
+      "invoke": false,
+      "reason": "Unrelated standalone script."
+    },
+    {
+      "id": "R07",
+      "prompt": "我不会选技术，想从零设计一个设备借用系统，支持申请、审批和归还。先给方案。",
+      "invoke": true,
+      "reason": "Beginner new-project design."
+    },
+    {
+      "id": "R08",
+      "prompt": "Build a new personal notes app and give me the commands and browser address to use it.",
+      "invoke": true,
+      "reason": "New application implementation and first-run handoff."
+    },
+    {
+      "id": "R09",
+      "prompt": "This project was created with fullstack-blueprint. Add an order query page and API.",
+      "invoke": true,
+      "reason": "Continued feature implementation in a blueprint project."
+    },
+    {
+      "id": "R10",
+      "prompt": "给刚用 fullstack-blueprint 创建的项目增加 Redis 缓存，把配置和连接生命周期维护好。",
+      "invoke": true,
+      "reason": "Needed middleware in a blueprint project."
+    },
+    {
+      "id": "R11",
+      "prompt": "Use $fullstack-blueprint to explain how the current scheduling works. Do not redesign it.",
+      "invoke": true,
+      "reason": "Explicit invocation; keep the explanation scope."
+    },
+    {
+      "id": "R12",
+      "prompt": "先解释这份业务流程，再从零设计一个小应用；暂时不要生成应用代码。",
+      "invoke": true,
+      "reason": "Mixed request contains new-project design."
+    },
+    {
+      "id": "R13",
+      "prompt": "Start a new inventory application. I am a beginner and have no stack preference.",
+      "invoke": true,
+      "reason": "New project using the recommended foundation."
+    },
+    {
+      "id": "R14",
+      "prompt": "Refactor the service and mapper layers of this unrelated existing Java/Spring application.",
+      "invoke": false,
+      "reason": "Unrelated existing-project refactoring is not this skill's automatic scope."
+    },
+    {
+      "id": "R15",
+      "prompt": "Review whether the first-run README and YAML example match the implementation of this project built with fullstack-blueprint.",
+      "invoke": true,
+      "reason": "Consistency review of a blueprint project."
+    }
   ],
   "behavior_cases": [
     {
       "id": "B01",
-      "context": "Existing Java 17/Spring Boot application. Profiles use application.yml and application-prod.yaml. Collection uses Forest clients, services, MyBatis mappers, and XXL-JOB handlers.",
-      "prompt": "Design an advertising report collector that follows this project. Do not implement it yet.",
-      "checks": ["Preserves Java/Spring, profile configuration, and the existing scheduler.", "Explains affected responsibilities and failure handling using the existing structure.", "Does not prescribe a Python migration, config.yaml migration, dependency installation, or code edits."]
+      "workspace_policy": "design_documents_only",
+      "context": "Empty target directory, no project conventions or unrelated host instructions. Beginner user knows the business workflow but has no technical preferences.",
+      "prompt": "我想做一个设备借用小应用，支持申请、审批和归还。我不会选技术，请推荐简单方案，解释各部分做什么。只设计，可以保存设计文档，不要生成应用代码或安装依赖。",
+      "checks": [
+        "Recommends React/TypeScript/Vite with npm and Python/FastAPI/Pydantic with uv; keeps one frontend and one modular backend.",
+        "Explains responsibilities and calls in plain language, labels business assumptions, and does not require the user to select architecture patterns.",
+        "Covers YAML, API, logging and future first-run acceptance without speculative services or middleware.",
+        "Creates at most design documentation; no application code, dependency installation or implementation completion claim."
+      ]
     },
     {
       "id": "B02",
-      "context": "Existing Node backend uses environment variables with startup schema validation and a secret manager. The frontend uses /api/v2 and an established {data, meta} success envelope. Logs use trace_id.",
-      "prompt": "Implement an order lookup endpoint and connect it to the existing page.",
-      "checks": ["Preserves the config and secret sources, API prefix, response envelope, and trace_id contract.", "Uses the project's client, framework, and module layout.", "Verifies the new lookup and affected contract without migrating unrelated conventions."]
+      "workspace_policy": "implementation",
+      "context": "Empty isolated target project. The execution environment provides the documented Node/npm, Python/uv tools and network or a suitable dependency cache. Single-user local app; no accounts, administration or background jobs are required.",
+      "prompt": "Build a small personal notes app from scratch. I need to add and list notes, keep them after restarting the backend, and follow the README to run it locally. Use the recommended project standard and complete the implementation.",
+      "checks": [
+        "Builds a real React frontend and Python/FastAPI backend with npm/uv lockfiles, feature ownership, central API functions and same-origin calls.",
+        "Validates YAML and initializes structured logging before dependencies; chooses only persistence needed to retain notes.",
+        "Demonstrates create/list through the actual API and page and verifies restart persistence; health or mock output alone is insufficient.",
+        "A fresh-checkout rehearsal follows README prerequisites, setup, config preparation, startup commands and browser address; documented checks and frontend build run successfully or actual blockers are reported without a completion claim.",
+        "Handoff includes a concrete operation, expected result, stop/restart instructions and safe recovery from relevant first-run failures."
+      ]
     },
     {
       "id": "B03",
-      "context": "Empty application workspace, no repository conventions, no stack or deployment requirements supplied.",
-      "prompt": "Design a small equipment borrowing application with request, approval, and return workflows. Do not write code.",
-      "checks": ["Uses the React/TypeScript/Vite and Python/FastAPI/Pydantic baseline.", "Keeps one modular backend and introduces infrastructure only for an actual need.", "Uses the default YAML, same-origin API, logging, and error contracts in the proposal.", "Produces a design without scaffolding or demanding another approval to discuss it."]
+      "workspace_policy": "implementation",
+      "context": "A project created with fullstack-blueprint already has a React notes feature, CSS Modules, shared visual tokens and named requests in src/api/notes.ts. Supply those real files, existing checks and local fixture data.",
+      "prompt": "Improve the spacing and empty state on the notes list page. Keep this change small.",
+      "checks": [
+        "Keeps private changes with the React feature and reuses shared tokens and the current API definitions.",
+        "Uses only relevant frontend guidance, without a new architecture or setup workflow.",
+        "Verifies the affected empty/loading/error behavior as the fixture permits and states any missing browser/render checks."
+      ]
     },
     {
       "id": "B04",
-      "context": "Existing Vue page with local styles, shared visual tokens, and an established API client.",
-      "prompt": "Fix the spacing and empty state on the order list page.",
-      "checks": ["Loads only frontend guidance needed for the change.", "Preserves Vue, current styling, and the existing API client.", "Does not load architecture, backend configuration, or new-project guidance without a concrete dependency."]
+      "workspace_policy": "implementation",
+      "context": "A blueprint Python/FastAPI application with actual YAML settings models, JSON logging and an injected resource factory. A new optional page-size field is needed; the fixture can observe whether resources were created and capture safe startup diagnostics.",
+      "prompt": "Add a configurable default page size to config.yaml, validate it, and update the example and README. Make invalid configuration fail clearly before resource creation.",
+      "checks": [
+        "Maintains the single application-root YAML source with strict fields, a safe default/range and synchronized examples; no environment override chain.",
+        "Executable checks cover valid, missing/invalid and unknown settings, working-directory independence and environment variables not overriding YAML.",
+        "Invalid required settings prevent resource creation and do not expose synthetic credentials; activation/recovery instructions match actual startup behavior."
+      ]
     },
     {
       "id": "B05",
-      "context": "An application implementation plan was already approved. Superpowers design and verification records exist. The user has requested implementation and commit/push.",
-      "prompt": "Continue the approved implementation, fix any verified issues, and commit and push the result.",
-      "checks": ["Reuses the existing plan and approvals.", "Implements and verifies the authorized scope without restarting brainstorming or adding a second confirmation gate.", "Commits and pushes only the authorized changes after verification, reporting any actual blocker."]
+      "workspace_policy": "implementation",
+      "context": "A blueprint application repeatedly reads a slow external catalog; the user has requested Redis caching. Supply its actual settings/lifecycle code and an injectable fake Redis SDK for deterministic tests; no production cache is contacted.",
+      "prompt": "Add the requested Redis catalog cache. Keep configuration in config.yaml and give the component its own settings/resource file. Document how to set it up and what happens when Redis is unavailable.",
+      "checks": [
+        "Adds middleware.redis to the same YAML with strict settings and one infrastructure/middleware/redis.py containing settings and resource classes.",
+        "Root settings explicitly bind the component; startup injects and reuses resources, closes them on shutdown and partial startup failure, and business code does not read YAML or create pools.",
+        "Tests exercise actual cache-hit/miss and the chosen failure policy through the fake SDK; real Redis setup requirements and unverified integration are stated honestly."
+      ]
     },
     {
       "id": "B06",
-      "context": "New project. The user explicitly requires Vue, Spring Boot, deployment-managed environment variables, and /services/v3 endpoints.",
-      "prompt": "Use fullstack-blueprint to design the application with these requirements.",
-      "checks": ["Uses the user's stack, configuration sources, and API prefix instead of the default baseline.", "Still applies responsibility ownership, input validation, secret handling, and resource cleanup.", "Does not treat a new project as permission to override explicit requirements."]
+      "workspace_policy": "implementation",
+      "context": "A blueprint notes application has an approved edit-note implementation plan and Superpowers design/verification records. Supply the actual plan, code, tests and current API/README descriptions. Only local fixture Git is allowed if the task explicitly requests it.",
+      "prompt": "Continue the approved edit-note implementation. Update the affected tests and API/README documentation, verify the result, and tell me how to use the feature.",
+      "checks": [
+        "Reuses settled requirements and approvals without restarting brainstorming or adding another confirmation gate.",
+        "Implements and tests the planned feature using the existing blueprint module/API/configuration conventions, without unrelated infrastructure or unsolicited commits/pushes.",
+        "Current documentation, examples, commands and actual behavior agree; handoff names the user operation and verification limits."
+      ]
     }
   ]
 }

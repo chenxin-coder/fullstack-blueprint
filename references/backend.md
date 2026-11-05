@@ -1,6 +1,6 @@
 # Backend Responsibilities and Layering
 
-For existing backends, use the current language, framework, module layout, configuration sources, and lifecycle. The Python/Pydantic file names below illustrate the new-project baseline; use equivalent existing mechanisms in Java, Node, or other stacks. Review responsibility and behavior rather than conformity to these example names.
+Use these Python module conventions as the project grows. Read the [project baseline](project-baseline.md) for initial setup; add only files with actual responsibilities.
 
 ## Separate Responsibilities Before Directories
 
@@ -15,7 +15,7 @@ The API layer handles transport and validation, business logic owns business rul
 
 Simple queries need not pass through a service that only forwards arguments; a thin API may call a clearly defined query function. Centralize calculations, authorization scope, and state transitions in business logic. Extract complex rules into ordinary functions or domain modules without first building a domain framework.
 
-Typical runtime calls: `route → business function → data-access function`. With lightweight layering, business logic may depend directly on concrete data-access functions. To isolate external side effects, first pass existing dependencies explicitly; introduce ports and adapters when real multiple implementations require shared calling semantics. Keep pure rule modules independent of HTTP, ORM, and configuration loading. Honor existing domain/ports/adapters constraints. For pattern choices or dependency changes, state source import directions using the [architecture reference](architecture.md#distinguish-calls-from-source-dependencies); do not infer imports from runtime call order.
+Typical runtime calls: `route → business function → data-access function`. With lightweight layering, business logic may depend directly on concrete data-access functions. To isolate external side effects, first pass existing dependencies explicitly; introduce ports and adapters when real multiple implementations require shared calling semantics. Keep pure rule modules independent of HTTP, ORM, and configuration loading. For pattern choices or dependency changes, state source import directions using the [architecture reference](architecture.md#distinguish-calls-from-source-dependencies); do not infer imports from runtime call order.
 
 ## Modules and Packages
 
@@ -26,7 +26,7 @@ Typical runtime calls: `route → business function → data-access function`. W
 
 ## Correctness Ownership
 
-Validate inputs with the project's framework and contract; specify required, nullable, and default values and deliberate handling of unknown fields. For the new Python baseline, use strict Pydantic validation and reject unknown fields. The server verifies resource ownership and operation permissions. Client-supplied identity, amounts, status, or path identifiers do not establish authorization.
+Use strict Pydantic input validation and reject unknown fields; specify required, nullable, and default values. The server verifies resource ownership and operation permissions. Client-supplied identity, amounts, status, or path identifiers do not establish authorization.
 
 The use case defines the transaction around a business operation that must be atomic. Data access receives its transaction context and does not commit early on its own. Enforce uniqueness with database constraints; check-then-write alone does not handle concurrency. External HTTP operations are not undone by database rollback. When a change includes such side effects, explain resulting states and responsibility for retries or compensation after failures.
 
@@ -34,7 +34,7 @@ Represent expected business errors with stable error types and map them at the A
 
 ## Middleware Integration
 
-Extend the existing configuration binding and resource composition first. The config.yaml sections and Python file layout below apply when using the new-project baseline; adapt ownership and cleanup to the current framework without introducing a parallel settings system.
+Add only a needed component to the same configuration binding and application lifecycle. The settings class describes configuration; the resource class owns the client and its cleanup.
 
 - Choose and add middleware for actual caching, asynchronous work, search, or object-storage needs, and explain its responsibility. Without a corresponding requirement, do not install dependencies or create configuration sections.
 - Keep all configuration in the application's own `config.yaml`, with a separate section for each component, such as `middleware.redis` or `middleware.rabbitmq`. See the [configuration lifecycle](logging-config.md#configuration-lifecycle) for fields, examples, and validation.

@@ -1,10 +1,6 @@
 # Logging and Configuration
 
-## Existing Projects
-
-Use the project's established configuration sources, precedence, validation framework, secret delivery, logging schema, and deployment lifecycle. For example, keep Spring profiles in a Spring application and validated environment/secret-manager configuration where that is the project contract. Preserve existing correlation identifiers such as trace_id and logger integrations. Changes extend those mechanisms within the authorized scope; a convention differing from this blueprint is not itself a defect.
-
-The following concrete file names, Python logging setup, JSON fields, proxy choices, and restart rules are defaults for new projects without a specified convention. Apply validation, secret protection, clear resource ownership, and safe failure logging within either project's mechanisms.
+Use one configuration and logging standard from project initialization onward. Keep startup behavior explicit so a beginner can diagnose setup failures without reading business code.
 
 ## Logging Lifecycle
 
@@ -39,4 +35,4 @@ Write logs to stdout; the deployment environment handles collection, rotation, a
 
 ## Verification Targets
 
-Choose checks for the affected mechanism. For logging changes, verify the chosen log schema, repeated initialization, a single log per handled failure, correlation IDs, and absence of sensitive values in access logs and third-party exceptions. For configuration, cover valid, missing, invalid, and unknown fields as supported by the project's validation contract, plus its actual source precedence and activation behavior. With the new-project YAML-only baseline, also verify the fixed path and that environment variables cannot override settings. For middleware, verify settings ownership and resource startup/shutdown. Check affected API/proxy routes and absence of server secrets in browser artifacts. Retain relevant business regression coverage; format-string matching alone is insufficient acceptance evidence.
+For logging changes, verify JSON base fields, repeated initialization, a single log per handled failure, correlation IDs, and absence of sensitive values in access logs and third-party exceptions. For YAML configuration, cover valid, missing, invalid and unknown fields, the fixed path, restart activation, and the inability of environment variables to override settings. For middleware, verify settings ownership and resource startup/shutdown. Check affected API/proxy routes and absence of server secrets in browser artifacts. Retain relevant business regression coverage; format-string matching alone is insufficient acceptance evidence.
