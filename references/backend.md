@@ -32,7 +32,7 @@ The use case defines the transaction around a business operation that must be at
 
 Represent expected business errors with stable error types and map them at the API boundary to the [standard error response](http.md#contract-maintenance). Return safe information and request_id for unknown errors; the boundary responsible for handling them owns the log entry.
 
-Keep third-party protocol handling in the backend integration adapter. Reuse the [shared retry mechanism](http.md#third-party-api-retries) there; business modules call named integration operations without handling provider response codes or running retry loops.
+Keep third-party protocol handling in the backend's third-party API integration module. Reuse the [shared retry mechanism](http.md#third-party-api-retries) there; business modules call named integration operations without handling third-party response codes or running retry loops.
 
 ## Middleware Integration
 

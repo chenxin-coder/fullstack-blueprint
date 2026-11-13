@@ -101,7 +101,7 @@ These are the recommended starting standards. The assistant applies them to the 
 | Frontend ownership | Keep feature UI, state, helpers, and private styles with the feature; use CSS Modules in new projects and put actual cross-feature capabilities in shared |
 | API organization | Central API directory, split by business module, with paths, types, and named request functions; use a shared HTTP client and call named functions from pages |
 | Frontend/backend calls | Browsers use same-origin `/api/v1/...`; development proxy and production Nginx gateway configuration own backend target addresses |
-| Third-party API retries | The provider adapter classifies documented HTTP statuses and business codes; one shared backend helper runs bounded retries for operations safe to repeat |
+| Third-party API retries | The third-party API integration module decides whether to retry based on the API contract; one shared backend helper runs bounded retries for operations safe to repeat |
 | Backend configuration | Validated application-root config.yaml, loaded at startup; edits take effect on restart, without environment overrides or .env loading |
 | Middleware | Introduce for real business needs; use separate sections in config.yaml and one settings/resource file per component, assembled and released by the application lifecycle |
 | Logging | Structured JSON to stdout with stable identifiers and request_id; the responsible boundary logs each failure, with sensitive data filtered |
