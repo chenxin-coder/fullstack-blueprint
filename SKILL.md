@@ -48,6 +48,7 @@ Mark proposed designs as unimplemented and preserve historical facts when adding
 | Pages, components, state, or styles | [frontend.md](references/frontend.md) |
 | Python business modules, data access, transactions, or middleware | [backend.md](references/backend.md) |
 | API definitions, integration, failures, or repeated submissions | [http.md](references/http.md) |
+| Backend calls to third-party APIs, including response-code-based retries | [Third-Party API Retries](references/http.md#third-party-api-retries) |
 | Logs and exception recording | [logging-config.md: Logging Lifecycle](references/logging-config.md#logging-lifecycle) |
 | YAML settings, startup, or proxy configuration | [logging-config.md: Configuration Lifecycle](references/logging-config.md#configuration-lifecycle) |
 

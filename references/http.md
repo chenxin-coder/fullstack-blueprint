@@ -42,6 +42,16 @@ Return the DTO directly on success and use `code/message/request_id` for errors,
 - Set explicit client timeouts and cancellation; control server operation deadlines separately. Canceling a browser request does not imply server-side business rollback.
 - Transient read failures may use bounded retries with backoff and respect for server rate-limit signals. Retry writes automatically only when safe repetition is established. Do not automatically retry business-validation or permission rejections. Safety depends on actual side effects, not the HTTP method name alone.
 
+### Third-Party API Retries
+
+For backend calls to a third-party API, the provider adapter owns retry eligibility. Validate the response and use the provider's documented rules for that operation: distinguish HTTP status, the provider's business code in the response body (including on HTTP 200), and transport failures without a response. Explicitly allow only documented retryable statuses, business codes, or classified transient transport failures. An unknown code, invalid response body where one is required, or permanent error such as invalid input or denied access is not retryable by default. Resolve status/body precedence from the provider contract; never infer it from another provider's codes.
+
+Use one shared backend retry helper for external calls that need retries. Let the adapter classify each attempt's result; the helper owns maximum attempts (including the first call), a total deadline covering requests and waits, and backoff with jitter. Honor a documented provider retry delay; stop if waiting would exceed the budget. Keep any tunable values in the application's `config.yaml`. Reuse an existing helper or SDK mechanism if it supports these rules; otherwise a small function is enough. Use a single retry layer for the call so SDK, client and business retries do not multiply attempts. Skip the helper entirely when no integration needs retries.
+
+A retryable code does not make a write safe to replay. Automatically repeat a write only when the provider contract makes it safe, for example by supporting an idempotency key; reuse the same key for the same intent. If the outcome is unknown and replay is unsafe, query the result when possible or report it as unconfirmed. At the handling boundary, log the final failure once with a safe operation identifier, request ID, attempt count and classified error; omit credentials and raw responses.
+
+Verify with fake responses: a documented retryable code followed by success, a permanent or unknown code with one attempt, retry budget exhaustion, and a write that must not be repeated. Include HTTP 200 with a retryable business code when the provider uses that convention. Check documented retry delays and same-key replay when applicable.
+
 ## Choose Duplicate Protection by Operation Semantics
 
 | Operation condition | Smallest sufficient approach |
