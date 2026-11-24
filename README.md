@@ -98,6 +98,7 @@ These are the recommended starting standards. The assistant applies them to the 
 |---|---|
 | Default stack | React + TypeScript + Vite with npm/package-lock.json; Python + FastAPI + Pydantic with uv/uv.lock |
 | Module layering | Organize by business capability and separate API, business, and data-access responsibilities as needed; start with one frontend and one modular backend |
+| Database keys | Each new application-owned relational table uses a database-generated auto-increment integer `id` primary key; business identifiers use separate fields and uniqueness constraints where needed |
 | Frontend ownership | Keep feature UI, state, helpers, and private styles with the feature; use CSS Modules in new projects and put actual cross-feature capabilities in shared |
 | API organization | Central API directory, split by business module, with paths, types, and named request functions; use a shared HTTP client and call named functions from pages |
 | Frontend/backend calls | Browsers use same-origin `/api/v1/...`; development proxy and production Nginx gateway configuration own backend target addresses |

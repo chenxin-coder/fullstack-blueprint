@@ -26,6 +26,8 @@ B02 is an executable acceptance case, not a design review. Provide the declared 
 
 B03 checks a small continuation, B04 YAML startup behavior, B05 needed middleware lifecycle, and B06 approved continuation with documentation consistency. Use synthetic secrets and fake SDKs; state where real integration remains unverified. Git tests, if requested, use a local bare remote. No live systems or user global configuration need modification.
 
+For B02's database-key check, inspect the created table constraints and insert real rows without supplying `id`; an ORM declaration alone is insufficient. Verify generated integer keys and business/replay uniqueness separately. Earlier B02 runs predate this added check and do not establish its result.
+
 ## Comparison and Evidence
 
 Use the same model and settings for no-skill and before/after comparisons in fresh contexts. Repeat each case at least five times before reporting selection rates or wording reliability. Keep actual inputs, outputs, tool traces when available, file differences, commands and every violated check. A single round is a smoke observation, not a stable success rate or proof of improvement.

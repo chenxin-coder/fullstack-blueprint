@@ -9,6 +9,7 @@ Use this starting standard when building a new project for a beginner. Recommend
 | Frontend | React + TypeScript + Vite; use npm and commit package-lock.json; organize pages by feature, use CSS Modules for private styles, and maintain shared visual tokens centrally |
 | Backend | Python + FastAPI + Pydantic; manage dependencies with uv and commit uv.lock; select and pin runtime and dependency versions at project creation |
 | Application structure | One frontend and one backend organized by business module; modules collaborate in-process through public operations |
+| Database tables | When persistence is needed, follow the [database key convention](backend.md#database-keys): generated integer `id` primary key, with business identifiers kept separately |
 | Expansion | Choose persistence and middleware for actual business needs; split independent services only for concrete deployment or isolation requirements, using the [architecture reference](architecture.md#choose-the-smallest-sufficient-pattern) |
 
 ## Minimal Project Structure

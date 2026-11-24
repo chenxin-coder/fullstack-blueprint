@@ -24,6 +24,25 @@ Typical runtime calls: `route → business function → data-access function`. W
 - Distinguish API DTOs, internal business models, and database models when they have different reasons to change. Identical fields and semantics without independent variation do not justify copying objects for every layer.
 - Pass configuration, database connections, and replaceable external dependencies explicitly. Do not read global configuration and create connections inside business functions.
 
+## Database Keys
+
+Use one database-generated, auto-increment integer primary key named `id` in every new application-owned relational table, including relationship tables. Prefer a 64-bit integer supported by the chosen database. Declare both primary-key uniqueness and automatic generation in the actual schema/migration; an integer type or an ORM field name alone does not establish either. This stable row key remains separate from identifiers whose meaning belongs to the business.
+
+On creation, ordinary API inputs and inserts omit the generated `id`. Read the assigned key from the database; do not calculate `MAX(id) + 1` or use a process-local counter. Put business numbers, external identifiers, UUIDs and replay keys in meaningfully named fields. Enforce their real uniqueness scope with database constraints; a composite unique business key does not replace `id`. Relationship tables likewise keep `id` and constrain relationship columns when duplicate links are forbidden.
+
+For example, an order table can contain:
+
+| Field | Meaning and constraint |
+|---|---|
+| `id` | Database-generated integer primary key; omitted when creating the row |
+| `order_no` | Business order number; unique in its defined business scope |
+| `platform`, `external_id` | External identity when integration needs it; constrain the pair if unique per platform |
+| `creation_key` | Optional key for replaying one creation intent; constrain it in the actor/operation scope when used |
+
+Include only fields the feature needs. A trace/correlation `request_id` identifies a request for logging; it is not automatically an order number or a stable replay key. State separately which identifier the API accepts or exposes, and verify authorization regardless of identifier type. Generated IDs can have gaps; never promise consecutive business numbering or infer commit order from them. Do not require the same generation keyword across database engines: use the chosen engine's documented mechanism and do not promise deleted-key non-reuse unless explicitly required.
+
+Verify the created schema and real inserts, not just model declarations: omit `id` in multiple inserts and observe distinct generated integers; reject duplicate required business keys in the same scope; preserve one business result on a same-intent replay. Keep schema/migrations, models, API mappings and current examples aligned. This convention governs new tables; changing existing primary keys needs a separately authorized migration.
+
 ## Correctness Ownership
 
 Use strict Pydantic input validation and reject unknown fields; specify required, nullable, and default values. The server verifies resource ownership and operation permissions. Client-supplied identity, amounts, status, or path identifiers do not establish authorization.

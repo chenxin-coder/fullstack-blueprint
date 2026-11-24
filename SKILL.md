@@ -47,6 +47,7 @@ Mark proposed designs as unimplemented and preserve historical facts when adding
 | Module ownership, dependency boundaries, or complex rules/transactions | [architecture.md](references/architecture.md) |
 | Pages, components, state, or styles | [frontend.md](references/frontend.md) |
 | Python business modules, data access, transactions, or middleware | [backend.md](references/backend.md) |
+| New database tables, primary keys, or business identifiers | [Database Keys](references/backend.md#database-keys) |
 | API definitions, integration, failures, or repeated submissions | [http.md](references/http.md) |
 | Backend calls to third-party APIs, including response-code-based retries | [Third-Party API Retries](references/http.md#third-party-api-retries) |
 | Logs and exception recording | [logging-config.md: Logging Lifecycle](references/logging-config.md#logging-lifecycle) |

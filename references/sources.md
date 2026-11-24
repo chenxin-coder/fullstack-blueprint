@@ -2,6 +2,8 @@
 
 References reviewed: 2026-10-23. The following primary sources inform specific design choices. The table records the adopted ideas and how they apply to this skill.
 
+Database-key and skill-writing references additionally reviewed: 2026-11-24. The auto-increment `id` rule is this blueprint's selected project standard, not a claim that every architecture must use integer primary keys.
+
 | Source | Adopted idea | Choices in this skill |
 |---|---|---|
 | [Bulletproof React: project structure](https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md) | Group by business capability, use one-way dependencies, and create only needed directories | No fixed full feature subdirectory tree; existing public-entry-point rules take priority over the source's direct-import policy |
@@ -12,6 +14,9 @@ References reviewed: 2026-10-23. The following primary sources inform specific d
 | [Node Best Practices: logging](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/smartlogging.md) | Meaningful events, structured context, and correlation identifiers | Apply as needed without automatically adding a logging library, APM, or centralized logging cluster |
 | [Node Best Practices: configuration](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/projectstructre/configguide.md) | Group configuration, isolate secrets, and validate early | Use YAML loading without file/environment merging or environment override chains |
 | [Anthropic: Skill Creator](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md) | Short entry point, on-demand references, and realistic task validation | Keep the skill self-contained without mandatory network, plugin, or other skill dependencies |
+| [Supabase: primary-key strategies](https://github.com/supabase/agent-skills/blob/main/skills/supabase-postgres-best-practices/references/schema-primary-keys.md) | Focused rules with concrete schema examples; identity keys for a single database | Keep database-generated integer `id` as the chosen convention; business and external IDs remain separate fields rather than alternative primary-key schemes |
+| [PostgreSQL: identity columns](https://www.postgresql.org/docs/current/ddl-identity-columns.html) | Generated values and uniqueness are separate schema properties | Require both database generation and an actual primary-key constraint, and verify inserts rather than only ORM declarations |
+| [SQLite: automatic integer keys](https://www.sqlite.org/autoinc.html) | Automatic key assignment differs from the stronger deleted-key non-reuse guarantee of AUTOINCREMENT | Use the chosen engine's documented generation mechanism; do not conflate generated IDs, non-reuse and gapless business numbering |
 
 ## Scope of Adoption
 

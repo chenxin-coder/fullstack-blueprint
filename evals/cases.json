@@ -114,7 +114,8 @@
         "Validates YAML and initializes structured logging before dependencies; chooses only persistence needed to retain notes.",
         "Demonstrates create/list through the actual API and page and verifies restart persistence; health or mock output alone is insufficient.",
         "A fresh-checkout rehearsal follows README prerequisites, setup, config preparation, startup commands and browser address; documented checks and frontend build run successfully or actual blockers are reported without a completion claim.",
-        "Handoff includes a concrete operation, expected result, stop/restart instructions and safe recovery from relevant first-run failures."
+        "Handoff includes a concrete operation, expected result, stop/restart instructions and safe recovery from relevant first-run failures.",
+        "Inspects the created schema/migration and real inserts: every new application-owned relational table, including relationship tables if any, has a database-generated auto-increment integer primary key named id. Ordinary create inputs omit it. Actual inserts generate distinct keys; separate business/replay fields enforce uniqueness in their defined scope and correlation request_id is not assumed to be a replay key."
       ]
     },
     {

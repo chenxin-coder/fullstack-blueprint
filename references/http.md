@@ -67,6 +67,8 @@ Disabling the frontend submit button improves usability; the server guarantees c
 
 Follow the API contract's authentication mechanism. For cookies, check CSRF and credential policies. Route browser requests through the same-origin entry point; do not broaden CORS or permissions to make integration work.
 
+A client-generated business identifier or idempotency key is separate from the [database-generated primary key](backend.md#database-keys). Store it in a named business field and enforce the required uniqueness. A correlation `request_id` helps trace an HTTP request; it is not automatically a replay key and may change between attempts. Ordinary create inputs omit the table's generated `id`.
+
 ## Creation Example Requiring Result Replay
 
 Create an order with `POST /api/v1/orders`. `OrderCreate` preserves input, generates a business-intent identifier, and calls `orders.create()`; the client adds the existing authentication and idempotency headers. The backend validates authorization and quantity, and the business function saves the order and idempotency result in one database transaction. Return the order and refresh the order list on success. If the response is lost, confirm with the original key. Changing quantity with the same key conflicts; use a new key only after the user confirms a new intent.
